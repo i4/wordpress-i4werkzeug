@@ -1,0 +1,2 @@
+example-wordpress/*
+!example-wordpress/.htaccess
