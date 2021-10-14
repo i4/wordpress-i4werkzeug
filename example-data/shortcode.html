@@ -1,0 +1,24 @@
+<h1>Demonstration von RRZE Shortcodes</h1>
+
+Das <a href="https://www.wordpress.rrze.fau.de/plugins/fau-und-rrze-plugins/elements/">RRZE Elements-Plugin</a> wird benötigt!
+
+[alert style="success"]Sofern das hier auf grünem Hintergrund angezeigt wird, scheint das Plugin zu funktionieren![/alert]
+
+<h2>Versteckter Inhalt (mit Zeitmarker)</h2>
+<!-- Achtung: Das Datum gibt an, ab (start) oder bis (end) wann etwas *versteckt* ist! -->
+[hidden-text start="2021-11-01"]
+Dieser Inhalt ist bis 1. November 2021 sichtbar.
+[/hidden-text]
+[hidden-text end="2021-11-01"]
+Dieser Inhalt ist erst ab dem 1. November 2021 sichtbar.
+[/hidden-text]
+
+<h2>Latex</h2>
+[latex]
+\lambda f.(\lambda x.f\ (x\ x))\ (\lambda x.f\ (x\ x))
+[/latex]
+
+<br>
+<br>
+<p>Und nun noch ein verschachteltes <tt>i4include</tt>:</p>
+[i4include]foo.html[/i4include]

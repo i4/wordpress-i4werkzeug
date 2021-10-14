@@ -4,7 +4,7 @@ services:
   db:
     image: mysql:5.7
     volumes:
-      - data_db:/var/lib/mysql
+      - ./example-mysql:/var/lib/mysql
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: somewordpress
@@ -17,9 +17,9 @@ services:
       - db
     image: wordpress:latest
     volumes:
-      - data_wp:/var/www/html
+      - ./example-wordpress:/var/www/html
       - ./example-data:/var/www/data
-      - ./plugin-i4embed:/var/www/html/wp-content/plugins/i4embed
+      - ./plugin:/var/www/html/wp-content/plugins/i4include
     ports:
       - "8000:80"
     restart: always
@@ -28,7 +28,4 @@ services:
       WORDPRESS_DB_USER: wordpress
       WORDPRESS_DB_PASSWORD: wordpress
       WORDPRESS_DB_NAME: wordpress
-
-volumes:
-  data_db: {}
-  data_wp: {}
+      WORDPRESS_DEBUG: 1
