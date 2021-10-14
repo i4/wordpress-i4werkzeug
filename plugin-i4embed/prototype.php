@@ -1,36 +1,33 @@
 <?php
 /**
-* Plugin Name: i4Embed
+* Plugin Name: i4include
 * Plugin URI: https://www4.cs.fau.de
-* Description: Embed HTML directories (with images) in WordPress
+* Description: Embed HTML files (and optional their directories) in WordPress
 * Version: 1.0
 * Author: Bernhard Heinloth
 * Author URI: https://www4.cs.fau.de/~heinloth
 **/
 
-/* Please note: This plugin requires an permalink setting WITHOUT trailing slash,
-   e.g.
-        /%category%/%postname%
-   set in the WP admin interface (.../wp-admin/options-permalink.php)
-   
-   Moreover, the target file must be specified with the filename
-   e.g.
-        [i4extern]/var/www/data/aufgabe0/a0.shtml[/i4extern]
-   and
-        [i4extern]https://www4.cs.fau.de/Lehre/WS21/V_BS/index.ushtml[/i4extern]
-   (mind the index.ushtml, which is not obvious for webpages)
-*/
+/* Die sog. Query Variable, d.h. der Name der Variable,
+   welche in WordPress für dynamische Inhalte (bei `dir="true"`) für die aktuelle
+   angeforderte Datei verwendet wird (die URL wird um diesen Variablennamen erweitert) */
+$i4include_queryvar = 'extern';
 
-// Query variable (URL will be extended by this name)
-$i4extern_query_var = 'extern';
-// Shortcode name
-$i4extern_shortcode = 'i4extern';
+/* Der Name des Shortcodes, wie er im Editor in WordPress verwendet werden muss */
+$i4include_shortcode_name = 'i4include';
 
-// Allowed extensions to embed in WordPress
-$i4extern_embed = array('htm', 'html', 'shtml', 'ushtml');
+/* Der Name des Shortcode-attributs, der dynamische Inhalte aktivieren kann*/
+$i4include_shortcode_attr_dynamic = 'dynamic';
 
-// Extensions (and the corresponding MIME types) to directly forward
-$i4extern_forward = array(
+/* Regulärer Ausdruck, welcher die validen Pfade für den Shortcode definiert */
+$i4include_allowed_path = '#^(http[s]?://[^/]*(?:fau|uni-erlangen)\.de/.*|/proj/i4www/.*|/var/www/data/.*)$#i';
+
+/* Erlaubte Dateinamenerweiterungen für eingebettete Inhalte */
+$i4include_ext_html = array('htm', 'html', 'shtml', 'ushtml');
+
+/* Dateinamenerweiterungen für Binärdateien (und die dazugehörigen MIME Typen)
+  für direktes durchreichen an den Webbrowser */
+$i4include_ext_bin = array(
 	'gif' => 'image/gif',
 	'png' => 'image/png',
 	'jpg' => 'image/jpeg',
@@ -38,83 +35,174 @@ $i4extern_forward = array(
 	'svg' => 'image/svg+xml'
 );
 
-function i4extern_pathinfo($base) {
-	global $i4extern_query_var;
 
+/* Hilfsfunktion zur Bestimmung der relevanten Pfadteile.
+     $shortcode_path ist der im Shortcode übergebene Pfad
+     $shortcode_attr ist ein Array mit den in Shortcode angegebenen Attributen
+
+   Diese Funktion liefert ein assoziatives Array mit folgenden Inhalten zurück:
+     ['base']    ist der volle Pfad des Ordners, wie er im Shortcode eingegeben wird
+                 (also unabhängig vom dynamischen Endpoint)
+     ['link']    ist die volle URL (inklusive Endpoint) zu der aktuell angezeigten Wordpress Seite
+     ['file']    ist die aktuell zu inkludierende Datei
+                 (welche auch anhand des übergebenen Endpoint bestimmt wird)
+     ['dir']     ist der volle Pfad des aktuellen Verzeichnisses der zu 
+                 inkludierenden Datei (unter Berücksichtigung des Endpoints)
+     ['ext']     ist die Dateinamenerweiterung der aktuell angeforderten Datei (ohne `.`)
+     ['path']    ist der resultierende volle Pfad der aktuell zu inkludierenden Datei
+                 (unter Berücksichtigung des Endpoints)
+     ['valid']   nur wahr, wenn der resultierende Pfad gültig ist
+     ['dynamic'] wird auf wahr gesetzt, wenn dynamische Inhalte unterstützt werden
+     ['query']   Der Wert der Variable `extern` (dieses Arrayelement existiert nur,
+                 sofern `dynamic` auf wahr gesetzt und `extern` vorhanden ist)
+*/
+function i4include_pathinfo($shortcode_path, $shortcode_attr) {
+	global $i4include_queryvar, $i4include_shortcode_attr_dynamic, $i4include_allowed_path;
+	
+	// ggf. relativen Pfad anpassen 
+	if (stream_is_local($shortcode_path)) {
+		$shortcode_path = realpath($shortcode_path);
+	}
+
+	// Rückgabe Array initialisieren
 	$r = array(
-		'base' => dirname($base),
-		'link' => get_permalink().'/'.$i4extern_query_var.'/'
+		'base' => dirname($shortcode_path),
+		// Prüfe, ob das Attribut `dynamic` vorhanden & auf wahr gesetzt ist
+		'dynamic' => array_key_exists($i4include_shortcode_attr_dynamic, $shortcode_attr)
+		          && filter_var($shortcode_attr[$i4include_shortcode_attr_dynamic], FILTER_VALIDATE_BOOLEAN)
 	);
 
-	$notset='/notset/';  // neither false nor null is allowed
-	$query_var = get_query_var($i4extern_query_var, $notset);
-	if ($query_var == $notset) {
-		$r['file'] = basename($base);
-		$r['dir'] = $r['base'];
-		$r['link'] .= $r['file'];
+	if ($r['dynamic']) {
+		// Dynamisch (Pfad anhand Shortcode sowie  `extern`, sofern vorhanden)
+
+		/* Da `get_query_var()` bei nicht vorhandener Variable eine leere
+		   Zeichenkette liefert, was aber auch ein valider Wert sein kann,
+		   ein kleiner Hack: Der Inhalt von `$notset` ist ein invalider Wert
+		   (den `extern` nicht annehmen kann), welcher nun bei `get_query_var`
+		   als default (d.h. wenn die Variable nicht vorhanden ist)
+		   zurückgegeben wird */
+		$notset='/notset/';  
+		$query_var = get_query_var($i4include_queryvar, $notset);
+		if ($query_var == $notset) {
+			// Variable `extern` nicht gesetzt, d.h. wir berücksichtigen nur den Shortcodepfad
+			$r['file'] = basename($shortcode_path);
+			$r['dir'] = $r['base'];
+			$r['link'] = get_permalink().'/'.$i4include_queryvar.'/'.$r['file'];
+			$r['path'] = $shortcode_path;
+		} else {
+			// Variable `extern` gesetzt, d.h. wir kombinieren diese mit den Shortcodepfad
+			$r['query'] = $query_var;
+			$r['link'] =  get_permalink().'/'.$i4include_queryvar.'/'.$query_var;
+			$r['file'] = basename($query_var);
+			$dir = dirname($query_var);
+			$r['dir'] = $r['base'].( $dir != '.' ? '/'.$dir : '');
+			$r['path'] = $r['dir'].'/'.$r['file'];
+			if (stream_is_local($r['path'])) {
+				$r['path'] = realpath($r['path']);
+			}
+		}
 	} else {
-		$r['query'] = $query_var;
-		$r['link'] .= $query_var;
-		$r['file'] = basename($query_var);
-		$dir = dirname($query_var);
-		$r['dir'] = $r['base'].( $dir != '.' ? '/'.$dir : '');
+		// Statisch (Verwende nur Shortcodepfad)
+		$r['dynamic'] = FALSE;
+		$r['file'] = basename($shortcode_path);
+		$r['dir'] = $r['base'];
+		$r['link'] = get_permalink();
+		$r['path'] = $shortcode_path;
 	}
+	
+	// Dateiendung
 	$r['ext'] = strtolower(substr($r['file'], strrpos($r['file'], '.') + 1));
-	$r['path'] = $r['dir'].'/'.$r['file'];
+
+	// Prüfe ob Pfad valid (er muss mit 'base' beginnen und dem Regex entsprechen)
+	$r['valid'] = substr($r['path'], 0, strlen($r['base'])) === $r['base'] &&
+	              preg_match($i4include_allowed_path, $r['path']) > 0;
 
 	return $r;
 }
 
 
-function i4extern_query_vars($vars) {
-	global $i4extern_query_var;
-	$vars[] = $i4extern_query_var;
+/* Setze `extern` als zusätzliche Wordpress Variable */
+function i4include_query_vars($vars) {
+	global $i4include_queryvar;
+	$vars[] = $i4include_queryvar;
 	return $vars;
 }
-add_filter('query_vars', 'i4extern_query_vars');
+add_filter('query_vars', 'i4include_query_vars');
 
 
-function i4extern_rewrite_endpoint() {
-	global $i4extern_query_var;
-	add_rewrite_endpoint($i4extern_query_var, EP_PERMALINK | EP_PAGES );
-	//flush_rewrite_rules();
+/* Registriere `extern` als WordPress Endpoint
+   (das beeinflusst die Rewrite Regeln, welche ggf erneuert werden müssen */
+function i4include_rewrite_endpoint() {
+	global $i4include_queryvar;
+	add_rewrite_endpoint($i4include_queryvar, EP_PERMALINK | EP_PAGES );
+
+	/* Nachfolgende Zeile ist für die Entwicklung hilfreich:
+	   Sie erneuert die rewrite rules, was notwendig ist,
+	   wenn z.B. $i4include_queryvar geändert wurde */
+	// flush_rewrite_rules();
 }
-add_filter('init','i4extern_rewrite_endpoint');
+add_filter('init','i4include_rewrite_endpoint');
 
 
-function i4extern_handler_function($atts, $content, $tag) {
-	global $i4extern_embed;
-	$pathinfo = i4extern_pathinfo($content);
-	if (in_array($pathinfo['ext'], $i4extern_embed)) {
-		// TODO: Security!
+/* Das Herz: diese Funktion wird für jeden Shortcode `[i4include ...]` aufgerufen,
+   liest die entsprechende Datei und gibt diese aus */
+function i4include_handler_function($atts, $content, $tag) {
+	global $i4include_ext_html, $i4include_ext_bin;
+	$pathinfo = i4include_pathinfo($content, $atts);
+	if (!$pathinfo['valid']) {
+		$error = 'das Einbetten des Pfads <tt>'.$pathinfo['path'].'</tt> ist nicht erlaubt!';
+	} else if (!in_array($pathinfo['ext'], $i4include_ext_html)) {
+		$error = 'Dateien mit der Endung <tt>'.$pathinfo['ext'].'</tt> sind nicht erlaubt!';
+	} else {
 		$embed = file_get_contents($pathinfo['path']);
-		// From the web page? Then do some reformat
-		if (preg_match('#http[s]?://www4\.cs\.fau\.de(/.*)#i', $content, $contenturl) > 0 && preg_match('/(<div id="content">.*)<!-- beginning footer\.shtml -->/sm', $embed, $contentdiv)) {
-			print_r($contenturl);
-			$embed = str_replace(array($pathinfo['dir'], dirname($contenturl[1]).'/'), './', $contentdiv[1]);
+		if ($embed === false) {
+			$error = 'die Datei <tt>.'.$pathinfo['path'].'</tt> konnte nicht gelesen werden!';
+		} else {
+			// Falls von  unserer www4 Webseite was eingebettet wird, entferne Kopf und Fußzeile
+			if (preg_match('#http[s]?://www4\.[^/]+(?:fau|uni-erlangen)\.de(/.*)#i', $content, $contenturl) > 0 && preg_match('/(<div id="content">.*)<!-- beginning footer\.shtml -->/sm', $embed, $contentdiv)) {
+				$embed = str_replace(array($pathinfo['dir'], dirname($contenturl[1]).'/'), './', $contentdiv[1]);
+			}
+			return $embed;
 		}
-		return $embed;
 	}
+	error_log($pathinfo['link'].': '.$error);
+	return '<div style="margin:2px; padding: 2px; border:2px solid red"><b>i4include Fehler:</b> Der Inhalt kann nicht angezeigt werden &ndash; '.$error.'</div>';
 }
-add_shortcode($i4extern_shortcode, 'i4extern_handler_function' );
+add_shortcode($i4include_shortcode_name, 'i4include_handler_function' );
 
 
-function i4extern_redirect_on_shortcode() {
-	global $post, $i4extern_query_var, $i4extern_shortcode, $i4extern_forward;
+/* Durch die Verwendung von 'template_redirect' wird dies Funktion VOR der
+   Ausgabe von WordPress ausgeführt, allerdings sind die anzuzeigende Inhalte
+   schon vorhanden (d.h. die URL ausgewertet) */
+function i4include_redirect_on_shortcode() {
+	global $post, $i4include_queryvar, $i4include_shortcode_name, $i4include_ext_bin;
+	// Untersuche Nur valide Seiten mit Inhalt
 	if (is_singular() && !empty($post->post_content)) {
-		if (preg_match('/'.get_shortcode_regex(array($i4extern_shortcode)).'/',$post->post_content, $matchurl) > 0) {
-			$pathinfo = i4extern_pathinfo($matchurl[5]);
-			if (!array_key_exists('query', $pathinfo) || empty($pathinfo['query'])) {
-				wp_redirect(get_permalink().'/'.$i4extern_query_var.'/'.basename($matchurl[5]));
-				exit();
-			} else if (array_key_exists($pathinfo['ext'], $i4extern_forward)) {
-				header('Content-type: ' . $i4extern_forward[$ext]);
-				print(file_get_contents($pathinfo['path']));
-				exit();
+		// Prüfe, ob der i4include Shortcode verwendet wird
+		if (preg_match('/'.get_shortcode_regex(array($i4include_shortcode_name)).'/',$post->post_content, $shortcode_match) > 0) {
+			/* $shortcode_match[3] hat nun alle Attribute und 
+			   $shortcode_match[5] den Shortcode Pfad */
+
+			// Hole Informationen über den Pfad
+			$pathinfo = i4include_pathinfo($shortcode_match[5], shortcode_parse_atts($shortcode_match[3]));
+
+			// Umschreiben nur bei dynamischen (validen) Inhalten notwendig
+			if ($pathinfo['dynamic'] && $pathinfo['valid']) {
+				if (!array_key_exists('query', $pathinfo) || empty($pathinfo['query'])) {
+					// Sofern keine Query Variable vorhanden ist, ändere die URL auf .../extern
+					//wp_redirect(get_permalink().'/'.$i4include_queryvar.'/'.basename($shortcode_match[5]));
+					wp_redirect($pathinfo['link']);
+					exit();
+				} else if (array_key_exists($pathinfo['ext'], $i4include_ext_bin)) {
+					// Sofern die Dateiendung auf eine Binärdatei hinweist, gib direkt den Inhalt aus
+					header('Content-type: ' . $i4include_ext_bin[$pathinfo['ext']]);
+					print(file_get_contents($pathinfo['path']));
+					exit();
+				}
 			}
 		}
 	}
 }
-add_action('template_redirect','i4extern_redirect_on_shortcode',1);
+add_action('template_redirect','i4include_redirect_on_shortcode',1);
 
 ?>
