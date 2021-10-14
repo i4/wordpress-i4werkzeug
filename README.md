@@ -2,10 +2,10 @@ WordPress Plugin `i4include`
 ===========================
 
 Dieses Plugin ermöglicht das Einbinden von HTML-Inhalten in WordPress-Seiten
-aus anderen Ressourcen (Webserver, Dateisystem).
+aus anderen Ressourcen (Webserver, Dateisystem) -- ganz ohne `iframe`s!
 
 
-**Beispiel:** Durch den Shortcode in der Wordpressseite 'Test'
+**Beispiel:** Durch den Shortcode in der WordPress-Seite 'Test'
 
     [i4include]/var/www/data/foo1.html[/i4include]
 
@@ -23,7 +23,7 @@ anhand der erlaubten Dateieendung angegeben.
 Neben dem statischen Einbetten des Inhalts einer konkreten Datei beherrscht
 dieses Plugin jedoch noch die Möglichkeit, dynamisch Dateien aus einen ganzen
 Verzeichnisbaum auszuliefern, d.h. (relative) Verlinkungen in diesen Datei
-werden auf der Webseite unter Veibehaltung des WordPresslayouts unterstützt.
+werden auf der Webseite unter Veibehaltung des WordPress-Layouts unterstützt.
 
 Nehmen wir mal an, dass im Verzeichnis `/var/www/data/` neben `bar.html` auch 
 noch die Dateien `fubar.html` sowie  ein Unterorderner `images` u.a. mit der
@@ -31,7 +31,7 @@ Bilddatei `baz.jpg` liegen und `bar.html` sowohl einen Link
 `<a href="fubar.html">Fubar</a>` als auch eine Grafik `<img src="images/baz.jpg">`
 beinhaltet.
 
-Wird nun auf der Wordpressseite 'Test' beim Einbetten der Parameter `dynamic`
+Wird nun auf der Wordpress-Seite 'Test' beim Einbetten der Parameter `dynamic`
 auf wahr gestellt
 
     [i4include dynamic="true"]/var/www/data/bar.html[/i4include]
@@ -55,12 +55,12 @@ auf `fubar.html` durch den Browser zu
 
 umgewandelt wird (mit `extern=fubar.html`), das Plugin bettet nun auf der
 gleichen WordPress-Seite an der Position des Shortcodes `[i4include...]` den
-Inhalt von `fubar.html` ein -- d.h. das WordPresslayout (Kopf und Fuß) bleibt
-bestehen, es sieht aus wie eine reguläre WordPressseite.
+Inhalt von `fubar.html` ein -- d.h. das WordPress-Layout (Kopf und Fuß) bleibt
+bestehen, es sieht aus wie eine reguläre WordPress-Seite.
 
 Bei Binärdateien (z.B. Bilder) muss vom Plugin eine Besonderheit berücksichtigt
 werden:
-Hier darf nicht das [HTML-]Wordpresslayout (Kopf, Menü etc) ausgegeben werden,
+Hier darf nicht das [HTML-]Wordpress-Layout (Kopf, Menü etc) ausgegeben werden,
 sondern direkt und ausschließlich der Inhalt der Datei, zudem muss noch ein
 spezieller HTTP Header übergeben werden, welcher den Dateityp (als MIME Format)
 bestimmt.
@@ -123,7 +123,10 @@ nur der Ordner ist nicht ausreichend!
 Limitierung
 -----------
 
- * Die Verknüpfungen in der Zieldatei müssen im `dynamic`-Modus relativ sein
+ * Die Verknüpfungen (`<a href="...">`) in der Zieldatei müssen im `dynamic`-Modus
+   relativ sein und müssen innerhalb des Verzeichnisses der Pfaddatei sein,
+   damit die Zielseiten auch eingebettet werden.
+   Sonst kommt wahrscheinlich eine Fehlerseite!
  * Es dürfen nicht mehrere `dynamic` includes mit unterschiedlichen Pfaden auf
    der selben Seite vorkommen (aber mehrere normale includes und maximal ein
    dynamischer sind okay).
