@@ -1,8 +1,9 @@
 WordPress Plugin `i4include`
 ===========================
 
-Dieses Plugin ermöglicht das Einbinden von HTML-Inhalten in WordPress-Seiten
-aus anderen Ressourcen (Webserver, Dateisystem) -- ganz ohne `iframe`s!
+Dieses Plugin ermöglicht das Einbinden von HTML-Inhalten (entweder einzeln
+Dateien oder einen ganzen Verzeichnisbaum) in WordPress-Seiten aus anderen
+Ressourcen (Webserver, Dateisystem) -- ganz ohne `iframe`s!
 
 
 **Beispiel:** Durch den Shortcode in der WordPress-Seite 'Test'
@@ -131,6 +132,8 @@ Limitierung
    der selben Seite vorkommen (aber mehrere normale includes und maximal ein
    dynamischer sind okay).
  * Verweise auf Ordner (ohne Dateinamen) sind nicht zulässig
+ * Die eingebundenen Inhalte sind nicht über die Suche zu finden, deshalb
+   sollte der Mechanismus mit Maß eingesetzt werden.
  * Einbinden von externen Stylesheets und JavaScript sollte vermieden werden,
    denn das kann zu Problemen führen -- und zerstört das zu vereinheitlichende 
    Look & Feel der neuen Seite.
@@ -185,3 +188,11 @@ installiert und aktiviert werden, damit das Beispiel
     [i4include  shortcodes="true"]shortcode.html[/i4include]
 
 korrekt dargestellt wird.
+
+
+Erweiterungsmöglichkeiten
+-------------------------
+
+Größere Binärinhalte sollten nicht über WordPress/PHP, sondern direkt über den
+Webserver ausgeliefert werden. Das kann einfach über eine webserverweite Rewrite
+Regel und einer kleinen Anpassung im Plugin (mit Header Redirect) erreicht werden.
