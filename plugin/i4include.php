@@ -251,7 +251,7 @@ function i4include_redirect_on_shortcode() {
 					exit();
 				} else if (array_key_exists($pathinfo['ext'], $i4include_ext_bin)) {
 					// Sofern die Dateiendung auf eine Binärdatei hinweist, gib direkt den Inhalt aus
-					header('Content-type: ' . $i4include_ext_bin[$pathinfo['ext']]);
+					header('Content-Type: ' . $i4include_ext_bin[$pathinfo['ext']]);
 					print(file_get_contents($pathinfo['path']));
 					exit();
 				}
