@@ -25,7 +25,8 @@ $i4include_shortcode_attr_shortcode = 'shortcodes';
 /* Der Name des Shortcode-attributs, der die Anzeige von Fehlern auf der Webseite (zu Debugzwecken) erlaubt */
 $i4include_shortcode_attr_showerror = 'showerrors';
 
-/* Regulärer Ausdruck, welcher die validen (absoluten) Pfade für den Shortcode definiert */
+/* Regulärer Ausdruck, welcher die validen (absoluten) Pfade für den Shortcode definiert.
+   Jedes Teilmuster muss auf `/.*` enden, damit die Ordnernamen vollständig gematcht werden */
 $i4include_allowed_path = '#^(http[s]?://[^/]*(?:fau|uni-erlangen)\.de/.*|/proj/i4www/.*|/var/www/data/.*)$#i';
 
 /* Basispfad für relative Pfade (sollte natürlich vom obigen regulären Ausdruck akzeptiert werden) */
