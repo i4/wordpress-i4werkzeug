@@ -27,7 +27,7 @@ $i4include_shortcode_attr_showerror = 'showerrors';
 
 /* Regulärer Ausdruck, welcher die validen (absoluten) Pfade für den Shortcode definiert.
    Jedes Teilmuster muss auf `/.*` enden, damit die Ordnernamen vollständig gematcht werden */
-$i4include_allowed_path = '#^(http[s]?://[^/]*(?:fau|uni-erlangen)\.de/.*|/proj/i4www/.*|/var/www/data/.*)$#i';
+$i4include_allowed_path = '#^(http[s]?://[^/]+\.(?:fau|uni-erlangen)\.de/.*|/proj/i4www/.*|/var/www/data/.*)$#i';
 
 /* Basispfad für relative Pfade (sollte natürlich vom obigen regulären Ausdruck akzeptiert werden) */
 $i4include_base_path = '/var/www/data';
