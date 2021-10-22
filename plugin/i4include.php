@@ -180,21 +180,21 @@ function i4include_handler_function($attrs, $content, $tag) {
 	global $i4include_dynamic_path, $i4include_ext_html, $i4include_ext_bin, $i4include_shortcode_attr_shortcode, $i4include_shortcode_attr_showerror, $i4include_recursion;
 	$pathinfo = i4include_pathinfo($content, $attrs);
 	if ($pathinfo['dynamic'] && $i4include_dynamic_path != $pathinfo['full']) {
-		$error = 'es darf nicht mehrere <tt>dynamic includes</tt> mit unterschiedlichen Pfaden (<tt>'.$i4include_dynamic_path.'</tt> und <tt>'.$pathinfo['full'].'</tt>) auf dieser Seite geben!';
+		$error = 'es darf nicht mehrere <tt>dynamic includes</tt> mit unterschiedlichen Pfaden (<tt>'.esc_html($i4include_dynamic_path).'</tt> und <tt>'.esc_html($pathinfo['full']).'</tt>) auf dieser Seite geben!';
 	} else if (empty($pathinfo['path'])) {
-		$error = 'die Datei <tt>'.$pathinfo['file'].'</tt> existiert im Verzeichnis <tt>'.$pathinfo['dir'].'</tt> nicht!';
+		$error = 'die Datei <tt>'.esc_html($pathinfo['file']).'</tt> existiert im Verzeichnis <tt>'.esc_html($pathinfo['dir']).'</tt> nicht!';
 	} else if (!$pathinfo['valid']) {
-		$error = 'das Einbetten des Pfads <tt>'.$pathinfo['path'].'</tt> ist nicht erlaubt!';
+		$error = 'das Einbetten des Pfads <tt>'.esc_html($pathinfo['path']).'</tt> ist nicht erlaubt!';
 	} else if (!in_array($pathinfo['ext'], $i4include_ext_html)) {
-		$error = 'Dateien mit der Endung <tt>'.$pathinfo['ext'].'</tt> sind nicht erlaubt!';
+		$error = 'Dateien mit der Endung <tt>'.esc_html($pathinfo['ext']).'</tt> sind nicht erlaubt!';
 	} else if (in_array($pathinfo['path'], $i4include_recursion)) {
-		$error = 'die Datei <tt>'.$pathinfo['path'].'</tt> soll erneut (endlos)rekursiv eingebunden werden!';
+		$error = 'die Datei <tt>'.esc_html($pathinfo['path']).'</tt> soll erneut (endlos)rekursiv eingebunden werden!';
 	} else if ($pathinfo['dynamic'] && count($i4include_recursion) > 0) {
 		$error = 'dynamische Includes sind nur in WordPress möglich, nicht jedoch über eingebundene Seiten!';
 	} else {
 		$result = file_get_contents($pathinfo['path']);
 		if ($result === false) {
-			$error = 'die Datei <tt>.'.$pathinfo['path'].'</tt> konnte nicht gelesen werden!';
+			$error = 'die Datei <tt>.'.esc_html($pathinfo['path']).'</tt> konnte nicht gelesen werden!';
 		} else {
 			// Falls von  unserer www4 Webseite was eingebettet wird, entferne Kopf und Fußzeile
 			// TODO: irgendwann entfernen.
@@ -217,7 +217,7 @@ function i4include_handler_function($attrs, $content, $tag) {
 	// Fehlerbehandlung
 	if (i4include_attribute_as_bool($attrs, $i4include_shortcode_attr_showerror)) {
 		// Zeige Fehler auf der Webseite, wenn `showerrors` gesetzt ist
-		return '<div style="margin:2px; padding: 2px; border:2px solid red"><b>i4include Fehler:</b> Der Inhalt kann nicht angezeigt werden &ndash; '.$error.'<br><pre>'.print_r($pathinfo, true).'</pre></div>';
+		return '<div style="margin:2px; padding: 2px; border:2px solid red"><b>i4include Fehler:</b> Der Inhalt kann nicht angezeigt werden &ndash; '.$error.'<br><pre>'.esc_textarea(print_r($pathinfo, true)).'</pre></div>';
 	} else {
 		// Speichere im Log, und ignoriere Shortcode auf der Webseite
 		error_log($pathinfo['link'].': '.$error);
