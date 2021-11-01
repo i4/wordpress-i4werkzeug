@@ -45,8 +45,20 @@ $i4include_ext_bin = array(
 	'png' => 'image/png',
 	'jpg' => 'image/jpeg',
 	'jpeg' => 'image/jpeg',
-	'svg' => 'image/svg+xml'
+	'svg' => 'image/svg+xml',
+	'txt' => 'text/plain',
+	'xml' => 'text/xml',
+	'css' => 'text/css',
+	'js' => 'text/javascript',
+	'js' => 'text/javascript',
+	'pdf' => 'application/pdf',
+	'gz' => 'application/gzip',
+	'zip' => 'application/zip',
+	'sh' => 'application/x-sh',
 );
+
+/* Erweiterungen, welche zwingend via WordPress durchgereicht werden müssen */
+$i4include_ext_bin_force_pass_through = array('svg');
 
 /* Statusvariable, welche Rekursionen von includes erkennen und verhindern kann */
 $i4include_recursion = array();
@@ -234,7 +246,7 @@ add_shortcode($i4include_shortcode_name, 'i4include_handler_function' );
    Ausgabe von WordPress ausgeführt, allerdings sind die anzuzeigende Inhalte
    schon vorhanden (d.h. die URL ausgewertet) */
 function i4include_redirect_on_shortcode() {
-	global $post, $i4include_queryvar, $i4include_shortcode_name, $i4include_ext_bin, $i4include_base_path, $i4include_base_path_web;
+	global $post, $i4include_queryvar, $i4include_shortcode_name, $i4include_ext_bin, $i4include_ext_bin_force_pass_through, $i4include_base_path, $i4include_base_path_web;
 	// Untersuche Nur valide Seiten mit Inhalt
 	if (is_singular() && !empty($post->post_content)) {
 		// Prüfe, ob der i4include Shortcode verwendet wird
@@ -255,7 +267,7 @@ function i4include_redirect_on_shortcode() {
 					exit();
 				} else if (array_key_exists($pathinfo['ext'], $i4include_ext_bin)) {
 					// Sofern die Dateiendung auf eine (erlaubte) Binärdatei hinweist...
-					if (substr($pathinfo['path'], 0, strlen($i4include_base_path)) === $i4include_base_path) {
+					if (!in_array($pathinfo['ext'], $i4include_ext_bin_force_pass_through) && substr($pathinfo['path'], 0, strlen($i4include_base_path)) === $i4include_base_path) {
 						// ... so kann diese entweder direkt vom Webserver ausgeliefert werden
 						wp_redirect(get_home_url().$i4include_base_path_web.substr($pathinfo['path'], strlen($i4include_base_path)));
 					} else {
