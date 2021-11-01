@@ -27,10 +27,13 @@ $i4include_shortcode_attr_showerror = 'showerrors';
 
 /* Regulärer Ausdruck, welcher die validen (absoluten) Pfade für den Shortcode definiert.
    Jedes Teilmuster muss auf `/.*` enden, damit die Ordnernamen vollständig gematcht werden */
-$i4include_allowed_path = '#^(http[s]?://[^/]+\.(?:fau|uni-erlangen)\.de/.*|/proj/i4www/.*|/var/www/data/.*)$#i';
+$i4include_allowed_path = '#^(http[s]?://(?:[^/]+\.fau\.de|[^/]+\.uni-erlangen\.de|localhost[:0-9]*)/.*|/proj.stand/i4wp/extern/.*)$#i';
 
 /* Basispfad für relative Pfade (sollte natürlich vom obigen regulären Ausdruck akzeptiert werden) */
-$i4include_base_path = '/var/www/data';
+$i4include_base_path = '/proj.stand/i4wp/extern';
+
+/* Webzugriff auf Basispfad */
+$i4include_base_path_web = '/extern';
 
 /* Erlaubte Dateinamenerweiterungen für eingebettete Inhalte */
 $i4include_ext_html = array('htm', 'html', 'shtml', 'ushtml');
@@ -70,7 +73,7 @@ function i4include_attribute_as_bool($attributes, $name) {
      ['link']    ist die volle URL (inklusive Endpoint) zu der aktuell angezeigten Wordpress Seite
      ['file']    ist die aktuell zu inkludierende Datei
                  (welche auch anhand des übergebenen Endpoint bestimmt wird)
-     ['dir']     ist der volle Pfad des aktuellen Verzeichnisses der zu 
+     ['dir']     ist der volle Pfad des aktuellen Verzeichnisses der zu
                  inkludierenden Datei (unter Berücksichtigung des Endpoints)
      ['ext']     ist die Dateinamenerweiterung der aktuell angeforderten Datei (ohne `.`)
      ['path']    ist der resultierende volle Pfad der aktuell zu inkludierenden Datei
@@ -82,8 +85,8 @@ function i4include_attribute_as_bool($attributes, $name) {
 */
 function i4include_pathinfo($shortcode_path, $shortcode_attr) {
 	global $i4include_base_path, $i4include_dynamic_path, $i4include_queryvar, $i4include_shortcode_attr_dynamic, $i4include_allowed_path;
-	
-	// ggf. relativen Pfad anpassen 
+
+	// ggf. relativen Pfad anpassen
 	if (stream_is_local($shortcode_path)) {
 		if (!path_is_absolute($shortcode_path)) {
 			$shortcode_path = $i4include_base_path.'/'.$shortcode_path;
@@ -111,7 +114,7 @@ function i4include_pathinfo($shortcode_path, $shortcode_attr) {
 		   (den `extern` nicht annehmen kann), welcher nun bei `get_query_var`
 		   als default (d.h. wenn die Variable nicht vorhanden ist)
 		   zurückgegeben wird */
-		$notset='/notset/';  
+		$notset='/notset/';
 		$query_var = get_query_var($i4include_queryvar, $notset);
 		if ($query_var == $notset) {
 			// Variable `extern` nicht gesetzt, d.h. wir berücksichtigen nur den Shortcodepfad
@@ -139,7 +142,7 @@ function i4include_pathinfo($shortcode_path, $shortcode_attr) {
 		$r['link'] = get_permalink();
 		$r['path'] = $shortcode_path;
 	}
-	
+
 	// Dateiendung
 	$r['ext'] = strtolower(substr($r['file'], strrpos($r['file'], '.') + 1));
 
@@ -169,7 +172,7 @@ function i4include_rewrite_endpoint() {
 	/* Nachfolgende Zeile ist für die Entwicklung hilfreich:
 	   Sie erneuert die rewrite rules, was notwendig ist,
 	   wenn z.B. $i4include_queryvar geändert wurde */
-	// flush_rewrite_rules();
+	//flush_rewrite_rules();
 }
 add_filter('init','i4include_rewrite_endpoint');
 
@@ -221,7 +224,7 @@ function i4include_handler_function($attrs, $content, $tag) {
 	} else {
 		// Speichere im Log, und ignoriere Shortcode auf der Webseite
 		error_log($pathinfo['link'].': '.$error);
-		return '';
+		return '(Einbettung fehlgeschlagen)';
 	}
 }
 add_shortcode($i4include_shortcode_name, 'i4include_handler_function' );
@@ -231,13 +234,13 @@ add_shortcode($i4include_shortcode_name, 'i4include_handler_function' );
    Ausgabe von WordPress ausgeführt, allerdings sind die anzuzeigende Inhalte
    schon vorhanden (d.h. die URL ausgewertet) */
 function i4include_redirect_on_shortcode() {
-	global $post, $i4include_queryvar, $i4include_shortcode_name, $i4include_ext_bin;
+	global $post, $i4include_queryvar, $i4include_shortcode_name, $i4include_ext_bin, $i4include_base_path, $i4include_base_path_web;
 	// Untersuche Nur valide Seiten mit Inhalt
 	if (is_singular() && !empty($post->post_content)) {
 		// Prüfe, ob der i4include Shortcode verwendet wird
 		preg_match_all('/'.get_shortcode_regex(array($i4include_shortcode_name)).'/',$post->post_content, $shortcode_matches, PREG_SET_ORDER);
 		foreach ($shortcode_matches as $shortcode_match) {
-			/* $shortcode_match[3] hat nun alle Attribute und 
+			/* $shortcode_match[3] hat nun alle Attribute und
 			   $shortcode_match[5] den Shortcode Pfad */
 
 			// Hole Informationen über den Pfad
@@ -251,9 +254,15 @@ function i4include_redirect_on_shortcode() {
 					wp_redirect($pathinfo['link']);
 					exit();
 				} else if (array_key_exists($pathinfo['ext'], $i4include_ext_bin)) {
-					// Sofern die Dateiendung auf eine Binärdatei hinweist, gib direkt den Inhalt aus
-					header('Content-Type: ' . $i4include_ext_bin[$pathinfo['ext']]);
-					print(file_get_contents($pathinfo['path']));
+					// Sofern die Dateiendung auf eine (erlaubte) Binärdatei hinweist...
+					if (substr($pathinfo['path'], 0, strlen($i4include_base_path)) === $i4include_base_path) {
+						// ... so kann diese entweder direkt vom Webserver ausgeliefert werden
+						wp_redirect(get_home_url().$i4include_base_path_web.substr($pathinfo['path'], strlen($i4include_base_path)));
+					} else {
+						// ... oder wir leiten sie durch WordPress an den Client
+						header('Content-Type: ' . $i4include_ext_bin[$pathinfo['ext']]);
+						print(file_get_contents($pathinfo['path']));
+					}
 					exit();
 				}
 			}

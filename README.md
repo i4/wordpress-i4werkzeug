@@ -8,7 +8,7 @@ Ressourcen (Webserver, Dateisystem) -- ganz ohne `iframe`s!
 
 **Beispiel:** Durch den Shortcode in der WordPress-Seite 'Test'
 
-    [i4include]/var/www/data/foo1.html[/i4include]
+    [i4include]/proj.stand/i4wp/extern/foo1.html[/i4include]
 
 wird der Inhalt der Datei `foo.html` einfach in der Ausgabe auf
 
@@ -26,8 +26,8 @@ dieses Plugin jedoch noch die Möglichkeit, dynamisch Dateien aus einen ganzen
 Verzeichnisbaum auszuliefern, d.h. (relative) Verlinkungen in diesen Datei
 werden auf der Webseite unter Veibehaltung des WordPress-Layouts unterstützt.
 
-Nehmen wir mal an, dass im Verzeichnis `/var/www/data/` neben `bar.html` auch 
-noch die Dateien `fubar.html` sowie  ein Unterorderner `images` u.a. mit der
+Nehmen wir mal an, dass im Verzeichnis `/proj.stand/i4wp/extern/` neben `bar.html`
+auch noch die Dateien `fubar.html` sowie  ein Unterorderner `images` u.a. mit der
 Bilddatei `baz.jpg` liegen und `bar.html` sowohl einen Link
 `<a href="fubar.html">Fubar</a>` als auch eine Grafik `<img src="images/baz.jpg">`
 beinhaltet.
@@ -35,7 +35,7 @@ beinhaltet.
 Wird nun auf der Wordpress-Seite 'Test' beim Einbetten der Parameter `dynamic`
 auf wahr gestellt
 
-    [i4include dynamic="true"]/var/www/data/bar.html[/i4include]
+    [i4include dynamic="true"]/proj.stand/i4wp/extern/bar.html[/i4include]
 
 so wird beim Öffnen der WordPress-Webseiten-URL
 
@@ -94,7 +94,7 @@ entsprechend.
 
 Die boolschen `PARAMETER` sind optional, folgende sind definiert:
 
- * `dyanmic` erlaubt das Einbinden weiterer Dokumente (`.htm`, `.html`, ...) und
+ * `dynamic` erlaubt das Einbinden weiterer Dokumente (`.htm`, `.html`, ...) und
    Binärdateien (derzeit Bilddateien `.png`, `.gif`, `.svg`, `.jpg`/`.jpeg`)
    welche im selben Verzeichnis der angegebenen Zieldatei liegt (oder unterhalb).
    Standardmäßig ist diese Option deaktiviert (`false`)
@@ -119,6 +119,15 @@ wäre z.B. valid:
 
 Außerdem muss beim Shortcode immer der volle Pfad zur Datei angegeben werden,
 nur der Ordner ist nicht ausreichend!
+
+Damit größere Binärinhalte nicht über WordPress/PHP, sondern direkt über den
+Webserver ausgeliefert werden können, sollte die Webserverkonfiguration das
+Verzeichnis `$i4include_base_path` per Web zugreifbar machen & in der Variable
+`$i4include_base_path_web` den notwendige URL Prefix definieren. 
+
+*Beispiel:* Falls das in `$i4include_base_path` definierte Verzeichnis
+`/proj.stand/i4wp/extern` auch via `https://example.com/extern` erreichbar ist,
+muss `$i4include_base_path_web = "/extern";` gesetzt werden.
 
 
 Limitierung
@@ -175,7 +184,7 @@ Nun im [Adminmenü auf Seiten](http://localhost:8000/wp-admin/edit.php?post_type
 wechseln und entweder eine neue Seite erstellen oder die *Beispiel-Seite* bearbeiten,
 dort dann einen Shortcode einfügen, z.B.
 
-    [i4include]/var/www/data/foo.html[/i4include]
+    [i4include]/proj.stand/i4wp/extern/foo.html[/i4include]
     [i4include dynamic="true"]bar.html[/i4include]
     [i4include dynamic="true" shortcodes="true" showerrors="true"]error.html[/i4include]
     [i4include dynamic="true"]https://www4.cs.fau.de/Lehre/WS21/V_BS/Uebungen/aufgabe0/a0.shtml[/i4include]
@@ -188,11 +197,3 @@ installiert und aktiviert werden, damit das Beispiel
     [i4include  shortcodes="true"]shortcode.html[/i4include]
 
 korrekt dargestellt wird.
-
-
-Erweiterungsmöglichkeiten
--------------------------
-
-Größere Binärinhalte sollten nicht über WordPress/PHP, sondern direkt über den
-Webserver ausgeliefert werden. Das kann einfach über eine webserverweite Rewrite
-Regel und einer kleinen Anpassung im Plugin (mit Header Redirect) erreicht werden.
