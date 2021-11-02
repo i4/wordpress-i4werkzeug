@@ -20,6 +20,12 @@ d.h. Änderungen an der Datei `foo.html` sind sofort auf der Webseite ersichtlic
 Die erlaubten Formate zum Einbinden werden im  Array `$i4include_ext_html`
 anhand der erlaubten Dateieendung angegeben.
 
+**Achtung:** Per `i4include` eingebundene Dateien unterliegen im Normalfall
+_nicht_ eventuell vorhandenen Zugriffskontrollregeln am Webserver, die den
+Zugriff auf einzelne Dateien oder Unterverzeichnisse verbieten. Insbesondere
+bei Verwendung der dynamischen Einbettung (siehe weiter unten) ist der Zugriff
+auf alle Dateien mit einer in `$i4include_ext_html` aufgeführten Dateiendung
+möglich.
 
 Neben dem statischen Einbetten des Inhalts einer konkreten Datei beherrscht
 dieses Plugin jedoch noch die Möglichkeit, dynamisch Dateien aus einen ganzen
