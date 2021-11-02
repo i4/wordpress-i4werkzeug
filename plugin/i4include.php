@@ -50,7 +50,6 @@ $i4include_ext_bin = array(
 	'xml' => 'text/xml',
 	'css' => 'text/css',
 	'js' => 'text/javascript',
-	'js' => 'text/javascript',
 	'pdf' => 'application/pdf',
 	'gz' => 'application/gzip',
 	'zip' => 'application/zip',
