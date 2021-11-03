@@ -1,9 +1,9 @@
 <?php
 /**
-* Plugin Name: i4include
+* Plugin Name: i4helper
 * Plugin URI: https://www4.cs.fau.de
-* Description: Einbetten von HTML Dateien (und optional das ganze Verzeichnis) für das neue i4 WordPress
-* Version: 1.0
+* Description: Einbetten von HTML Dateien (und optional das ganze Verzeichnis) und ein paar weitere Helferlein für das neue i4 WordPress
+* Version: 1.1
 * Author: Bernhard Heinloth
 * Author URI: https://www4.cs.fau.de/~heinloth
 **/
@@ -18,6 +18,12 @@ $i4include_shortcode_name = 'i4include';
 
 /* Der Name des Shortcode-attributs, der dynamische Inhalte aktivieren kann */
 $i4include_shortcode_attr_dynamic = 'dynamic';
+
+/* Der Name des Shortcode-attributs, der den Pfad zu einem Kurs ermittelt */
+$i4include_shortcode_attr_course = 'course';
+
+/* Der Name des Shortcode-attributs, der das Semester bei einer Lehrveranstaltung angibt ermittelt (benötigt course!) */
+$i4include_shortcode_attr_semester = 'semester';
 
 /* Der Name des Shortcode-attributs, der die Verarbeitung weiterer Shortcodes im Zieldokument erlaubt */
 $i4include_shortcode_attr_shortcode = 'shortcodes';
@@ -47,6 +53,10 @@ $i4include_ext_bin = array(
 	'jpeg' => 'image/jpeg',
 	'svg' => 'image/svg+xml',
 	'txt' => 'text/plain',
+	'h' => 'text/x-c',
+	'c' => 'text/x-c',
+	'cc' => 'text/x-c++',
+	'cpp' => 'text/x-c++',
 	'xml' => 'text/xml',
 	'css' => 'text/css',
 	'js' => 'text/javascript',
@@ -65,12 +75,106 @@ $i4include_recursion = array();
 /* Statusvariable zum Erkennen von mehrfachen dynamic include Shortcodes auf einer Seite */
 $i4include_dynamic_path = '';
 
-/* Hilfsfunktion, welche Prüft ob es ein boolsches Shortcode-Attribut gibt
+/* Name der Basisadresse für Lehre */
+$i4semester_teaching = 'lehre';
+
+/* Der Name des Shortcode-attributs, der das semester angibt */
+$i4course_shortcode_attr_semester = 'semester';
+
+$i4course_shortcode_name = 'i4course';
+
+$i4semester_shortcode_attr_format = 'format';
+
+$i4semester_shortcode_name = 'i4semester';
+
+
+/* Hilfsfunktion, welche prüft ob es ein Shortcode-Attribut gibt */
+function i4helper_has_attribute($attributes, $name) {
+	return !empty($attributes) && array_key_exists($name, $attributes);
+}
+
+
+/* Hilfsfunktion, welche prüft ob es ein Shortcode-Attribut gibt
+   und ggf dessen Wert zurück gibt (falls nicht, dann wird `null` zurück gegeben */
+function i4helper_attribute($attributes, $name) {
+	return i4helper_has_attribute($attributes, $name) ? $attributes[$name] : null;
+}
+
+/* Hilfsfunktion, welche prüft ob es ein boolsches Shortcode-Attribut gibt
    und ggf dessen Wert zurück gibt (falls nicht, dann wird `false` zurück gegeben */
-function i4include_attribute_as_bool($attributes, $name) {
-	return !empty($attributes) && array_key_exists($name, $attributes)
+function i4helper_attribute_as_bool($attributes, $name) {
+	return i4helper_has_attribute($attributes, $name)
 	    && filter_var($attributes[$name], FILTER_VALIDATE_BOOLEAN);
 }
+
+
+
+/* Bekomme das aktuelle Semester bzw parse den Namen */
+function i4semester_get($name = '', $format = 'long') {
+	if (empty($name) && is_page()) {
+		global $post, $i4semester_teaching;
+		$parents = get_post_ancestors($post->ID);
+		if ($parents && count($parents) >= 2 && get_post($parents[count($parents) - 1])->post_name == $i4semester_teaching) {
+			$name = get_post($parents[count($parents) - 2])->post_name;
+		}
+	}
+	if (!empty($name) && preg_match('/^s(?:o(?:mmer)?)?s(?:e(?:mester)?)?[ ]?(?:(?:[0-9]{2})?([0-9]{2}))$/i', $name, $matches)) {
+		$winter = false;
+		$year = $matches[1];
+	} else if (!empty($name) && preg_match('/^w(?:i(?:nter)?)?s(?:e(?:mester)?)?[ ]?(?:[0-9]{2})?(?:([0-9]{2})(?:\/(?:[0-9]{2}|[0-9]{4}))?)$/i', $name, $matches)) {
+		$winter = true;
+		$year = $matches[1];
+	} else {
+		$year = date("y");
+		$month = date("m");
+		if ($month < 4) {
+			$year--;
+			if ($year < 0)
+				$year = 99;
+			$winter = true;
+		} else if ($month >= 10) {
+			$winter = true;
+		} else {
+			$winter = false;
+		}
+	}
+
+	$y = str_pad($year, 2, "0", STR_PAD_LEFT);
+	$yn = str_pad(($year + 1) % 100, 2, "0", STR_PAD_LEFT);
+	switch ($format) {
+		case 'long':
+			return $winter ? ('Wintersemester 20'.$y.'/'.$yn) : ('Sommersemester 20'.$y);
+		case 'short':
+			return $winter ? ('WiSe 20'.$y.'/'.$yn) : ('SoSe 20'.$y);
+		case 'abbr':
+			return $winter ? ('WS'.$y) : ('SS'.$y);
+		case 'link':
+			return $winter ? ('ws'.$y) : ('ss'.$y);
+		default:
+			return $winter ? ('WS 20'.$y.'/'.$yn) : ('SS 20'.$y);
+	}
+}
+
+function i4semester_handler_function($attrs, $content, $tag) {
+	global $i4semester_shortcode_attr_format;
+	return i4semester_get($content, i4helper_attribute($attrs, $i4semester_shortcode_attr_format));
+}
+add_shortcode($i4semester_shortcode_name, 'i4semester_handler_function' );
+
+
+/* Gib für Lehrveranstaltungen die Adresse zum Semester der Seitenhierarchie zurück.
+   Falls der Aufruf nicht aus einer Lehrveranstaltung erfolgt oder semester gesetzt ist,
+   gib einen Adresse zum aktuellen Semester zurück */
+function i4course_get($name, $semester = null) {
+	global $i4semester_teaching;
+	return '/'.$i4semester_teaching.'/'.i4semester_get($semester, 'link').'/'.$name;
+}
+
+function i4course_handler_function($attrs, $content = '') {
+	global $i4course_shortcode_attr_semester;
+	return i4course_get($content, i4helper_attribute($attrs, $i4course_shortcode_attr_semester));
+}
+add_shortcode($i4course_shortcode_name, 'i4course_handler_function' );
 
 
 /* Hilfsfunktion zur Bestimmung der relevanten Pfadteile.
@@ -95,12 +199,15 @@ function i4include_attribute_as_bool($attributes, $name) {
                  sofern `dynamic` auf wahr gesetzt und `extern` vorhanden ist)
 */
 function i4include_pathinfo($shortcode_path, $shortcode_attr) {
-	global $i4include_base_path, $i4include_dynamic_path, $i4include_queryvar, $i4include_shortcode_attr_dynamic, $i4include_allowed_path;
+	global $i4include_base_path, $i4include_dynamic_path, $i4include_queryvar, $i4include_shortcode_attr_dynamic, $i4include_shortcode_attr_course, $i4include_shortcode_attr_semester, $i4include_allowed_path;
 
 	// ggf. relativen Pfad anpassen
 	if (stream_is_local($shortcode_path)) {
 		if (!path_is_absolute($shortcode_path)) {
-			$shortcode_path = $i4include_base_path.'/'.$shortcode_path;
+			if (i4helper_has_attribute($shortcode_attr, $i4include_shortcode_attr_course))
+				$shortcode_path = $i4include_base_path.i4course_get($shortcode_attr[$i4include_shortcode_attr_course], i4helper_attribute($shortcode_attr, $i4include_shortcode_attr_semester)).'/'.$shortcode_path;
+			else
+				$shortcode_path = $i4include_base_path.'/'.$shortcode_path;
 		}
 		$shortcode_path = realpath($shortcode_path);
 	}
@@ -110,7 +217,7 @@ function i4include_pathinfo($shortcode_path, $shortcode_attr) {
 		'full' => $shortcode_path,
 		'base' => dirname($shortcode_path),
 		// Prüfe, ob das Attribut `dynamic` vorhanden & auf wahr gesetzt ist
-		'dynamic' => i4include_attribute_as_bool($shortcode_attr, $i4include_shortcode_attr_dynamic)
+		'dynamic' => i4helper_attribute_as_bool($shortcode_attr, $i4include_shortcode_attr_dynamic)
 	);
 
 	if ($r['dynamic']) {
@@ -190,7 +297,7 @@ add_filter('init','i4include_rewrite_endpoint');
 
 /* Das Herz: diese Funktion wird für jeden Shortcode `[i4include ...]` aufgerufen,
    liest die entsprechende Datei und gibt diese aus */
-function i4include_handler_function($attrs, $content, $tag) {
+function i4include_handler_function($attrs, $content = '/') {
 	global $i4include_dynamic_path, $i4include_ext_html, $i4include_ext_bin, $i4include_shortcode_attr_shortcode, $i4include_shortcode_attr_showerror, $i4include_recursion;
 	$pathinfo = i4include_pathinfo($content, $attrs);
 	if ($pathinfo['dynamic'] && $i4include_dynamic_path != $pathinfo['full']) {
@@ -216,7 +323,7 @@ function i4include_handler_function($attrs, $content, $tag) {
 				$result = str_replace(array($pathinfo['dir'], dirname($contenturl[1]).'/'), './', $contentdiv[1]);
 			}
 			// Sofern das Attribut `shortcodes` aktiviert ist, werden im engebundenen Dokument die Shortcodes interpretiert
-			if (i4include_attribute_as_bool($attrs, $i4include_shortcode_attr_shortcode)) {
+			if (i4helper_attribute_as_bool($attrs, $i4include_shortcode_attr_shortcode)) {
 				// Alerdings müssen Rekursionen durch i4include verhindert werden!
 				array_push($i4include_recursion, $pathinfo['path']);
 				$result = do_shortcode($result);
@@ -229,7 +336,7 @@ function i4include_handler_function($attrs, $content, $tag) {
 		}
 	}
 	// Fehlerbehandlung
-	if (i4include_attribute_as_bool($attrs, $i4include_shortcode_attr_showerror)) {
+	if (i4helper_attribute_as_bool($attrs, $i4include_shortcode_attr_showerror)) {
 		// Zeige Fehler auf der Webseite, wenn `showerrors` gesetzt ist
 		return '<div style="margin:2px; padding: 2px; border:2px solid red"><b>i4include Fehler:</b> Der Inhalt kann nicht angezeigt werden &ndash; '.$error.'<br><pre>'.esc_textarea(print_r($pathinfo, true)).'</pre></div>';
 	} else {
