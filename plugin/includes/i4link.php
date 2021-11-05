@@ -16,6 +16,12 @@ const SHORTCODE_ATTR_EXTERN = 'extern';
 /* Shortcodeattribut für vollständige URLs (mit Domain) */
 const SHORTCODE_ATTR_FULL = 'full';
 
+/* Shortcodeattribut für Name des Links (statt dem Pfad) */
+const SHORTCODE_ATTR_NAME = 'name';
+
+/* Shortcodeattribut um den Inhalt des Links auszugeben (Name wird dann ignoriert) */
+const SHORTCODE_ATTR_RAW = 'raw';
+
 /* Gib für Lehrveranstaltungen die Adresse zum Semester der Seitenhierarchie zurück.
    Falls der Aufruf nicht aus einer Lehrveranstaltung erfolgt oder semester gesetzt ist,
    gib einen Adresse zum aktuellen Semester zurück */
@@ -33,6 +39,7 @@ function get($link, $semester = null, $course = null, $extern = false, $full = f
 			global $post;
 			foreach (array_reverse(get_post_ancestors($post->ID)) as $page)
 				$url .= '/' . get_post($page)->post_name;
+			$url .= '/' . $post->post_name;
 		}
 	} else {
 		$url .= '/' . \i4semester\TEACHING_PAGE . '/' . \i4semester\get($semester, 'link');
@@ -49,6 +56,12 @@ function get($link, $semester = null, $course = null, $extern = false, $full = f
 
 /* Behandlungsfunktion, welche von WordPress für jeden i4link Shortcode aufgerufen wird */
 function handler_function($attrs, $content = '') {
-	return get($content, \i4helper\attribute($attrs, SHORTCODE_ATTR_SEMESTER), \i4helper\attribute($attrs, SHORTCODE_ATTR_COURSE), \i4helper\attribute_as_bool($attrs, SHORTCODE_ATTR_EXTERN), \i4helper\attribute_as_bool($attrs, SHORTCODE_ATTR_FULL));
+	$link = get($content, \i4helper\attribute($attrs, SHORTCODE_ATTR_SEMESTER), \i4helper\attribute($attrs, SHORTCODE_ATTR_COURSE), \i4helper\attribute_as_bool($attrs, SHORTCODE_ATTR_EXTERN), \i4helper\attribute_as_bool($attrs, SHORTCODE_ATTR_FULL));
+	if (\i4helper\attribute_as_bool($attrs, SHORTCODE_ATTR_RAW)) {
+		return $link;
+	} else {
+		$name = \i4helper\attribute($attrs, SHORTCODE_ATTR_NAME, $content);
+		return '<a href="' . $link . '" title="' . $content . '">' . (empty($name) ? 'Link' : $name) . '</a>';
+	}
 }
 ?>

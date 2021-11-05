@@ -4,7 +4,10 @@ namespace i4semester;
 /* Der WordPress Shortcode Name: [i4semester] */
 const SHORTCODE_NAME = 'i4semester';
 
-/* Formatierungsattribut für den Shortcode*/
+/* Attribut für relative Änderung des Jahres */
+const SHORTCODE_ATTR_DELTA = 'delta';
+
+/* Formatierungsattribut für den Shortcode */
 const SHORTCODE_ATTR_FORMAT = 'format';
 
 /* Shortcut für das aktuelle Semester (damit ersparen wir uns das prüfen von Regexe) */
@@ -22,7 +25,7 @@ const TEACHING_PAGE = 'lehre';
 
 /* Erhalte ein Semester in gewünschten Format,
    parse dazu den übergebenen Namen oder verwende das aktuelle Semester */
-function get($name = '', $format = 'long') {
+function get($name = '', $format = 'long', $delta = null) {
 	// Suche in der Seitenhierarchie das Semester, zu dem diese Seite zugeordnet ist
 	if (empty($name) && is_page()) {
 		global $post;
@@ -45,7 +48,7 @@ function get($name = '', $format = 'long') {
 			// Ohne Jahresangaben immer auf das letzte Semester zeigen (d.h. bis April das Vorjahr)
 			$year--;
 		}
-	} else if (!empty($name) && $name != CURRENT_SEMESTER && preg_match('/^w(?:i(?:nter)?)?s(?:e(?:mester)?)?[ ]?(?:[0-9]{2})?(?:([0-9]{2})(?:\/(?:[0-9]{2}|[0-9]{4}))?)?$/i', $name, $matches)) {
+	} else if (!empty($name) && $name != CURRENT_SEMESTER && preg_match('/^w(?:i(?:nter)?)?s(?:e(?:mester)?)?[ ]?(?:(?:[0-9]{2})?([0-9]{2})(?:\/(?:[0-9]{2}|[0-9]{4}))?)?$/i', $name, $matches)) {
 		// Wintersemester
 		$winter = true;
 		if (array_key_exists(1, $matches)) {
@@ -64,6 +67,18 @@ function get($name = '', $format = 'long') {
 		} else {
 			$winter = false;
 		}
+	}
+	// Delta
+	if (!empty($delta) && is_numeric($delta)) {
+		$i = intval($delta);
+		if (abs($delta - $i) == "0.5") {
+			if ($winter && $delta > 0)
+				$year++;
+			else if (!$winter && $delta < 0)
+				$year--;
+			$winter = !$winter;
+		}
+		$year += $i;
 	}
 	// Überlaufbehandlung
 	if ($year < 0)
@@ -88,6 +103,6 @@ function get($name = '', $format = 'long') {
 
 /* Behandlungsfunktion, welche von WordPress für jeden i4semester Shortcode aufgerufen wird */
 function handler_function($attrs, $content, $tag) {
-	return get($content, \i4helper\attribute($attrs, SHORTCODE_ATTR_FORMAT));
+	return get($content, \i4helper\attribute($attrs, SHORTCODE_ATTR_FORMAT), \i4helper\attribute($attrs, SHORTCODE_ATTR_DELTA));
 }
 ?>

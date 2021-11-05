@@ -88,7 +88,7 @@ function generate($content, $name = '', $showdate = false, $uncover = null) {
 			$out .= '[hidden-text end="' . date('Y-m-d', $timestamp - $uncover * 86400) . '"]' . "\n";
 
 		// Neues Akkordionelement
-		$out .= '[collapse title="' . $matches[$i + 1] . '" name="' . $id . '"]' . "\n";
+		$out .= '[collapse title="' . trim($matches[$i + 1]) . '" name="' . $id . '"]' . "\n";
 
 		// Zeige Datum
 		if ($timestamp !== false && $showdate)
@@ -106,9 +106,9 @@ function generate($content, $name = '', $showdate = false, $uncover = null) {
 			}
 			$out .= "[/accordion]\n";
 		}
-		if ($timestamp !== false && is_numeric($uncover))
-			$out .= "[//hidden-text]\n";
 		$out .= "[/collapse]\n";
+		if ($timestamp !== false && is_numeric($uncover))
+			$out .= "[/hidden-text]\n";
 	}
 	return $out . "[/collapsibles]\n";
 }

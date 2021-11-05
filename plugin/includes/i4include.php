@@ -144,21 +144,21 @@ class Pathinfo {
 
 	/* Das Verzeichnis zum im Shortcode angegebenen Pfad
 	   (also unabhängig vom dynamischen Endpoint) */
-	public string $base;
+	public string $base = '';
 
 	/* Die volle URL (inklusive Endpoint) zu der aktuell angezeigten Wordpress Seite */
-	public string $link;
+	public string $link = '';
 
 	/* Die aktuell zu inkludierende Datei
 	   (welche auch anhand des übergebenen Endpoint bestimmt wird) */
-	public string $file;
+	public string $file = '';
 
 	/* Der volle Pfad des aktuellen Verzeichnisses der zu
 	   inkludierenden Datei (unter Berücksichtigung des Endpoints) */
-	public string $dir;
+	public string $dir = '';
 
 	/* Die Dateinamenerweiterung der aktuell angeforderten Datei (ohne `.`) */
-	public string $ext;
+	public string $ext = '';
 
 	/* Der resultierende volle Pfad der aktuell zu inkludierenden Datei
 	  (unter Berücksichtigung des Endpoints) */
@@ -168,10 +168,10 @@ class Pathinfo {
 	public bool $local;
 
 	/* nur wahr, wenn der resultierende Pfad gültig ist */
-	public bool $valid;
+	public bool $valid = false;
 
 	/* wird auf wahr gesetzt, wenn dynamische Inhalte unterstützt werden */
-	public bool $dynamic;
+	public bool $dynamic = false;
 
 	/* Der Wert der Variable `extern` (dieses Element ist nur vorhanden,
 	   sofern `dynamic` auf wahr gesetzt und `extern` vorhanden ist) */
@@ -183,6 +183,9 @@ class Pathinfo {
 	public function __construct($path, $attr) {
 		global $dynamic_path;
 
+		// Der angefragte Pfad
+		$this->path = $path;
+
 		// Prüfe ob lokal
 		$this->local = stream_is_local($path);
 
@@ -191,64 +194,68 @@ class Pathinfo {
 			// ggf. relativen Pfad anpassen
 			if (!path_is_absolute($path)) {
 				if (\i4helper\has_attribute($attr, SHORTCODE_ATTR_COURSE))
-					$path = FILESYSTEM_BASE . \i4link\get($path, \i4helper\attribute($attr, SHORTCODE_ATTR_SEMESTER), $attr[SHORTCODE_ATTR_COURSE], false, false);
+					$this->path = FILESYSTEM_BASE . \i4link\get($path, \i4helper\attribute($attr, SHORTCODE_ATTR_SEMESTER), $attr[SHORTCODE_ATTR_COURSE], false, false);
 				else
-					$path = FILESYSTEM_BASE . '/' . $path;
+					$this->path = FILESYSTEM_BASE . '/' . $path;
 			}
-			$path = realpath($path);
+			$path = realpath($this->path);
 		}
 
-		$this->full = $path;
-		$this->base = dirname($path);
-		// Prüfe, ob das Attribut `dynamic` vorhanden & auf wahr gesetzt ist
-		$this->dynamic = \i4helper\attribute_as_bool($attr, SHORTCODE_ATTR_DYNAMIC);
+		if (empty($path)) {
+			$this->valid = false;
+		} else {
+			$this->full = $path;
+			$this->base = dirname($path);
+			// Prüfe, ob das Attribut `dynamic` vorhanden & auf wahr gesetzt ist
+			$this->dynamic = \i4helper\attribute_as_bool($attr, SHORTCODE_ATTR_DYNAMIC);
 
-		if ($this->dynamic) {
-			// Dynamisch (Pfad anhand Shortcode sowie `extern`, sofern vorhanden)
-			if (empty($dynamic_path)){
-				$dynamic_path = $path;
-			}
+			if ($this->dynamic) {
+				// Dynamisch (Pfad anhand Shortcode sowie `extern`, sofern vorhanden)
+				if (empty($dynamic_path)){
+					$dynamic_path = $path;
+				}
 
-			/* Da `get_query_var()` bei nicht vorhandener Variable eine leere
-			   Zeichenkette liefert, was aber auch ein valider Wert sein kann,
-			   ein kleiner Hack: Der Inhalt von `$notset` ist ein invalider Wert
-			   (den `extern` nicht annehmen kann), welcher nun bei `get_query_var`
-			   als default (d.h. wenn die Variable nicht vorhanden ist)
-			   zurückgegeben wird */
-			$notset = '/notset/';
-			$query_var = get_query_var(QUERY_VAR, $notset);
-			if ($query_var == $notset) {
-				// Variable `extern` nicht gesetzt, d.h. wir berücksichtigen nur den Shortcodepfad
+				/* Da `get_query_var()` bei nicht vorhandener Variable eine leere
+				   Zeichenkette liefert, was aber auch ein valider Wert sein kann,
+				   ein kleiner Hack: Der Inhalt von `$notset` ist ein invalider Wert
+				   (den `extern` nicht annehmen kann), welcher nun bei `get_query_var`
+				   als default (d.h. wenn die Variable nicht vorhanden ist)
+				   zurückgegeben wird */
+				$notset = '/notset/';
+				$query_var = get_query_var(QUERY_VAR, $notset);
+				if ($query_var == $notset) {
+					// Variable `extern` nicht gesetzt, d.h. wir berücksichtigen nur den Shortcodepfad
+					$this->file = basename($path);
+					$this->dir = $this->base;
+					$this->link = get_permalink() . '/' . QUERY_VAR . '/' . $this->file;
+					$this->path = $path;
+				} else {
+					// Variable `extern` gesetzt, d.h. wir kombinieren diese mit den Shortcodepfad
+					$this->query = $query_var;
+					$this->link =  get_permalink() . '/' . QUERY_VAR . '/' . $query_var;
+					$this->file = basename($query_var);
+
+					$dir = dirname($query_var);
+					$this->dir = $this->base . ($dir != '.' ? '/' . $dir : '');
+					$this->path = $this->dir . '/' . $this->file;
+					if ($this->local)
+						$this->path = realpath($this->path);
+				}
+			} else {
+				// Statisch (Verwende nur Shortcodepfad)
+				$this->dynamic = FALSE;
 				$this->file = basename($path);
 				$this->dir = $this->base;
-				$this->link = get_permalink() . '/' . QUERY_VAR . '/' . $this->file;
+				$this->link = get_permalink();
 				$this->path = $path;
-			} else {
-				// Variable `extern` gesetzt, d.h. wir kombinieren diese mit den Shortcodepfad
-				$this->query = $query_var;
-				$this->link =  get_permalink() . '/' . QUERY_VAR . '/' . $query_var;
-				$this->file = basename($query_var);
-
-				$dir = dirname($query_var);
-				$this->dir = $this->base . ($dir != '.' ? '/' . $dir : '');
-				$this->path = $this->dir . '/' . $this->file;
-				if ($this->local)
-					$this->path = realpath($this->path);
 			}
-		} else {
-			// Statisch (Verwende nur Shortcodepfad)
-			$this->dynamic = FALSE;
-			$this->file = basename($path);
-			$this->dir = $this->base;
-			$this->link = get_permalink();
-			$this->path = $path;
+
+			// Dateiendung
+			$this->ext = strtolower(substr($this->file, strrpos($this->file, '.') + 1));
+
+			// Prüfe ob Pfad valid (er muss mit 'base' beginnen und dem Regex entsprechen)
+			$this->valid = substr($this->path, 0, strlen($this->base)) === $this->base && preg_match(ALLOWED_PATH_REGEX, $this->path) > 0;
 		}
-
-		// Dateiendung
-		$this->ext = strtolower(substr($this->file, strrpos($this->file, '.') + 1));
-
-		// Prüfe ob Pfad valid (er muss mit 'base' beginnen und dem Regex entsprechen)
-		$this->valid = substr($this->path, 0, strlen($this->base)) === $this->base && preg_match(ALLOWED_PATH_REGEX, $this->path) > 0;
 	}
 }
 
@@ -321,7 +328,7 @@ function shortcode_handler_function($attr, $content = '') {
 			$error = 'es darf nicht mehrere <tt>dynamic includes</tt> mit unterschiedlichen Pfaden (<tt>' . esc_html($dynamic_path) . '</tt> und <tt>' . esc_html($pathinfo->full) . '</tt>) auf dieser Seite geben!';
 		} else if (empty($pathinfo->path)) {
 			// Fehler: Zieldatei existiert nicht
-			$error = 'die Datei <tt>' . esc_html($pathinfo->file) . '</tt> existiert im Verzeichnis <tt>' . esc_html($pathinfo->dir) . '</tt> nicht!';
+			$error = 'die angeforderte Datei <tt>' . esc_html($pathinfo->path) . '</tt> existiert nicht!';
 		} else if (!$pathinfo->valid) {
 			// Fehler: Nicht erlaubt
 			$error = 'das Einbetten des Pfads <tt>' . esc_html($pathinfo->path) . '</tt> ist nicht erlaubt!';
@@ -362,7 +369,7 @@ function shortcode_handler_function($attr, $content = '') {
 		$retmsg = '<strong>i4include Fehler:</strong> Der Inhalt kann nicht angezeigt werden &ndash; ' . $error;
 	} else {
 		// Speichere im Log, und ignoriere Shortcode auf der Webseite
-		error_log($pathinfo->link . ': ' . $error . "\n" . print_r($pathinfo, true));
+		error_log($pathinfo->link . ': ' . $error);
 		$retmsg = 'Einbettung fehlgeschlagen';
 	}
 	// Nutze RRZE Elements für Ausgabe
