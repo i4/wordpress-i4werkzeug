@@ -58,10 +58,10 @@ function get($link, $semester = null, $course = null, $extern = false, $full = f
 function handler_function($attrs, $content = '') {
 	$link = get($content, \i4helper\attribute($attrs, SHORTCODE_ATTR_SEMESTER), \i4helper\attribute($attrs, SHORTCODE_ATTR_COURSE), \i4helper\attribute_as_bool($attrs, SHORTCODE_ATTR_EXTERN), \i4helper\attribute_as_bool($attrs, SHORTCODE_ATTR_FULL));
 	if (\i4helper\attribute_as_bool($attrs, SHORTCODE_ATTR_RAW)) {
-		return $link;
+		return esc_html($link);
 	} else {
 		$name = \i4helper\attribute($attrs, SHORTCODE_ATTR_NAME, $content);
-		return '<a href="' . $link . '" title="' . $content . '">' . (empty($name) ? 'Link' : $name) . '</a>';
+		return '<a href="' . esc_attr($link) . '" title="' . esc_attr($content) . '">' . esc_html(empty($name) ? 'Link' : $name) . '</a>';
 	}
 }
 ?>

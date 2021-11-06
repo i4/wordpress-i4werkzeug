@@ -59,7 +59,7 @@ function format($text) {
 	// Links (relativ)
 	$text = preg_replace_callback('#\[(.*?)\]\((.+?)\)#i',
 		function ($match) {
-			return '<a href="' . \i4link\get($match[2], null, null, true) . '">' . $match[1] . '</a>';
+			return '<a href="' . esc_attr(\i4link\get($match[2], null, null, true)) . '">' . esc_html($match[1]) . '</a>';
 		}, $text);
 	// FAU.tv
 	$text = preg_replace('#(?<=^|\s)(https://www\.(?:fau\.tv|video\.uni-erlangen\.de)/clip/id/[0-9]+)(?=\s|$)#i','[fauvideo url="\1"]', $text);
@@ -88,7 +88,7 @@ function generate($content, $name = '', $showdate = false, $uncover = null) {
 			$out .= '[hidden-text end="' . date('Y-m-d', $timestamp - $uncover * 86400) . '"]' . "\n";
 
 		// Neues Akkordionelement
-		$out .= '[collapse title="' . trim($matches[$i + 1]) . '" name="' . $id . '"]' . "\n";
+		$out .= '[collapse title="' . esc_attr(trim($matches[$i + 1])) . '" name="' . $id . '"]' . "\n";
 
 		// Zeige Datum
 		if ($timestamp !== false && $showdate)
