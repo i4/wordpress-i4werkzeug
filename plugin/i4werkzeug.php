@@ -19,6 +19,8 @@ require_once(I4WERKZEUG_PATH . 'includes/i4list.php');
 // Filter registrieren
 add_filter('query_vars', 'i4include\query_vars');
 add_filter('init', 'i4include\rewrite_endpoint');
+// Rewrite-Regel-Cache spülen wenn Plugin deaktiviert wird
+register_deactivation_hook( __FILE__, 'flush_rewrite_rules');
 // Registrierung der Verarbeitung bei i4include (vor der Ausgabe)
 add_action('template_redirect', 'i4include\redirect_on_shortcode', 1);
 
