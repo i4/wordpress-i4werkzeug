@@ -28,10 +28,10 @@ const SHORTCODE_ATTR_RAW = 'raw';
 function get($link, $semester = null, $course = null, $extern = false, $full = false) {
 	$url = ($full ? get_home_url() : '') . ($extern ? \i4include\URL_BASE : '');
 
-	$trailing_slash = !empty($link) ? substr($link, 0, 1) == '/' : false;
+	$absolute_link = !empty($link) ? substr($link, 0, 1) == '/' : false;
 
 	if (empty($semester) && empty($course)) {
-		if (!empty($link) && $trailing_slash) {
+		if (!empty($link) && $absolute_link) {
 			// Absoluter link
 			return $url . $link;
 		} else if (is_page()) {
@@ -47,7 +47,7 @@ function get($link, $semester = null, $course = null, $extern = false, $full = f
 			$url .= '/' . $course;
 	}
 	if (!empty($link)) {
-		if (!$trailing_slash)
+		if (!$absolute_link)
 			$url .= '/';
 		$url .= $link;
 	}
