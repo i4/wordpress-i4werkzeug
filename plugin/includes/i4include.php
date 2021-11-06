@@ -269,9 +269,6 @@ function send_cache_headers() {
 		header('Expires: '.gmdate('D, d M Y H:i:s', time() + CACHE_SECONDS).' GMT');
 	} else {
 		// Kein cachen im Browser!
-		header('Cache-Control: no-cache, no-store, must-revalidate');
-		header('Pragma: no-cache');
-		header('Expires: 0');
 		nocache_headers();
 	}
 }
