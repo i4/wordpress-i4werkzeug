@@ -28,8 +28,7 @@ const TEACHING_PAGE = 'lehre';
 function get($name = '', $format = 'long', $delta = null) {
 	// Suche in der Seitenhierarchie das Semester, zu dem diese Seite zugeordnet ist
 	if (empty($name) && is_page()) {
-		global $post;
-		$parents = get_post_ancestors($post->ID);
+		$parents = get_post_ancestors(null);
 		if ($parents && count($parents) >= 2 && get_post($parents[count($parents) - 1])->post_name == TEACHING_PAGE) {
 			$name = get_post($parents[count($parents) - 2])->post_name;
 		}

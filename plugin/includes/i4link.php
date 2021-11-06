@@ -36,10 +36,7 @@ function get($link, $semester = null, $course = null, $extern = false, $full = f
 			return $url . $link;
 		} else if (is_page()) {
 			// Baue URL aus Seitenhierarchie
-			global $post;
-			foreach (array_reverse(get_post_ancestors($post->ID)) as $page)
-				$url .= '/' . get_post($page)->post_name;
-			$url .= '/' . $post->post_name;
+			$url .= '/' . get_page_uri();
 		}
 	} else {
 		$url .= '/' . \i4semester\TEACHING_PAGE . '/' . \i4semester\get($semester, 'link');
