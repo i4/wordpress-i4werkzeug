@@ -25,7 +25,7 @@ mit dem NFS-Pfad `/proj/i4wp/extern` interagieren.
 Folgende Shortcodes sind implementiert:
 
  * [i4semester](doc/i4semester.md) zur dynamischen Anzeige des Semesternamens
- * [i4link]](doc/i4link.md) genieriert Verweise aus relativen Pfadangaben
+ * [i4link](doc/i4link.md) genieriert Verweise aus relativen Pfadangaben
  * [i4include](doc/i4include.md) erlaubt das einbetten von externen Inhalten
  * [i4list](doc/i4list.md) erstellt eine WordPress-typische Folien oder
    Aufgabenübersicht aus einer Vorgabe in einem einfachen und übersichtlichen Format
@@ -34,5 +34,5 @@ Details und Beispiele sind auf der Demowebseite unter
 [sys.cs.fau.de/lehre/ss22/demo](https://sys.cs.fau.de/lehre/ss22/demo) zu finden.
 
 Für die Entiwcklung/Erweiterung sollte nicht auf der produktiven WordPress-Instanz
-gearbeitet werden, sonderen eine [lokale Instanz (z.B. via Docker)](doc/dev.md]
+gearbeitet werden, sonderen eine [lokale Instanz (z.B. via Docker)](doc/dev.md)
 verwendet werden.
