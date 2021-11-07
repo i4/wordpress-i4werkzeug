@@ -48,10 +48,10 @@ wie folgt erstellen kann:
     *Bitte an 3G Nachweis denken!*
     
     ## Organisation
-    [vl1a.pdf](Folie zur Organisation)
+    [Folie zur Organisation](vl1a.pdf)
     
     ## Einführung
-    [vl1b.pdf](Folie zur Einführung)
+    [Folie zur Einführung](vl1b.pdf)
     
     
     2021-10-25 2. Vorlesung
@@ -76,8 +76,8 @@ verwendet werden:
     
     # Markdown Codes
     
-    [https://www4.cs.fau.de/Lehre/SS21/V_BST/](absoluter Link)
-    [../bst](relativer Link)
+    [absoluter Link](https://www4.cs.fau.de/Lehre/SS21/V_BST/)
+    [relativer Link](../bst)
     
     Ich wollte mal __unterstreichen__, dass das ziemlich **fett** und voll *schräg* ist!
     

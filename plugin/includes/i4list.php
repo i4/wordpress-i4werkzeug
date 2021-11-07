@@ -55,11 +55,11 @@ function format($text) {
 	// Horizontale Linie
 	$text = preg_replace('/^\s*(--[-]+|&#8212;)\s*$/m', '<hr>', $text);
 	// Links (absolut)
-	$text = preg_replace('#\[(http[s]://.+?)\]\((.+?)\)#i','<a href="\1">\2</a>', $text);
+	$text = preg_replace('#\[(.+?)\]\((http[s]://.+?)\)#i','<a href="\2">\1</a>', $text);
 	// Links (relativ)
 	$text = preg_replace_callback('#\[(.*)\]\((.+?)\)#i',
 		function ($match) {
-			return '<a href="' . \i4link\get($match[1]) . '">' . $match[2] . '</a>';
+			return '<a href="' . \i4link\get($match[2]) . '">' . $match[1] . '</a>';
 		}, $text);
 	// FAU.tv
 	$text = preg_replace('#(?<=\s)(https://www\.(?:fau\.tv|video\.uni-erlangen\.de)/clip/id/[0-9]+)(?=\s)#i','[fauvideo url="\1"]', $text);
