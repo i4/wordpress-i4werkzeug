@@ -23,10 +23,10 @@ Diese Shortcodes sind allerdings verhältnismäßig umständlich zu schreiben (u
     <i>Bitte an 3G Nachweis denken!</i>
     [accordion]
     [accordion-item title="Organisation" name="vl-1-1"]
-    <a href="[i4link]vl1a.pdf[/i4link]">Folie zur Organisation</a>
+    <a href="[i4link extern=true]vl1a.pdf[/i4link]">Folie zur Organisation</a>
     [/accordion-item]
     [accordion-item title="Einführung" name="vl-1-2"]
-    <a href="[i4link]vl1b.pdf[/i4link]">Folie zur Einführung</a>
+    <a href="[i4link extern=true]vl1b.pdf[/i4link]">Folie zur Einführung</a>
     [/accordion-item]
     [/accordion]
     [/collapse]
@@ -76,8 +76,8 @@ verwendet werden:
     
     # Markdown Codes
     
-    [absoluter Link](https://www4.cs.fau.de/Lehre/SS21/V_BST/)
-    [relativer Link](../bst)
+    [absoluter Link](https://www4.cs.fau.de/Lehre/SS21/V_BST/Evaluation/SS13_bst_v.pdf)
+    [relativer Link](../bst/evaluation/SS13_bst_v.pdf)
     
     Ich wollte mal __unterstreichen__, dass das ziemlich **fett** und voll *schräg* ist!
     

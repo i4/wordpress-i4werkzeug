@@ -51,7 +51,7 @@ function format($text) {
 	// Kursiv
 	$text = preg_replace('/(?<!\*)\*([^\*\s][^\*]*?)\*(?!\*)/', '<i>\1</i>', $text);
 	// Unterstrichen
-	$text = preg_replace('/(?<!_)([_]+)([^_\s][^_]*?)\1(?!_)/', '<u>\2</u>', $text);
+	$text = preg_replace('/(?<!_)([_][_]+)([^_\s][^_]*?)\1(?!_)/', '<u>\2</u>', $text);
 	// Horizontale Linie
 	$text = preg_replace('/^\s*(--[-]+|&#8212;)\s*$/m', '<hr>', $text);
 	// Links (absolut)
@@ -59,7 +59,7 @@ function format($text) {
 	// Links (relativ)
 	$text = preg_replace_callback('#\[(.*)\]\((.+?)\)#i',
 		function ($match) {
-			return '<a href="' . \i4link\get($match[2]) . '">' . $match[1] . '</a>';
+			return '<a href="' . \i4link\get($match[2], null, null, true) . '">' . $match[1] . '</a>';
 		}, $text);
 	// FAU.tv
 	$text = preg_replace('#(?<=\s)(https://www\.(?:fau\.tv|video\.uni-erlangen\.de)/clip/id/[0-9]+)(?=\s)#i','[fauvideo url="\1"]', $text);
