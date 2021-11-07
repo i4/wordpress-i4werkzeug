@@ -57,18 +57,18 @@ function format($text) {
 	// Links (absolut)
 	$text = preg_replace('#\[(.+?)\]\((http[s]://.+?)\)#i','<a href="\2">\1</a>', $text);
 	// Links (relativ)
-	$text = preg_replace_callback('#\[(.*)\]\((.+?)\)#i',
+	$text = preg_replace_callback('#\[(.*?)\]\((.+?)\)#i',
 		function ($match) {
 			return '<a href="' . \i4link\get($match[2], null, null, true) . '">' . $match[1] . '</a>';
 		}, $text);
 	// FAU.tv
-	$text = preg_replace('#(?<=\s)(https://www\.(?:fau\.tv|video\.uni-erlangen\.de)/clip/id/[0-9]+)(?=\s)#i','[fauvideo url="\1"]', $text);
+	$text = preg_replace('#(?<=^|\s)(https://www\.(?:fau\.tv|video\.uni-erlangen\.de)/clip/id/[0-9]+)(?=\s|$)#i','[fauvideo url="\1"]', $text);
 	return trim($text) . "\n";
 }
 
 /* Generiere eine Akkordionliste mit formatierten Elementen*/
 function generate($content, $name = '', $showdate = false, $uncover = null) {
-	$id_prefix = empty($name) ? 'el' : preg_replace('/[^a-z0-9]+/', '_', strtolower($name));
+	$id_prefix = empty($name) ? 'el' : preg_replace('/[^a-z0-9]+/', '_', str_replace(array('ä', 'ö', 'ü'), array('ae', 'oe', 'ue'), strtolower($name)));
 
 	$out = "[collapsibles]\n";
 	$matches = preg_split('/^(#(?!#)|[0-9-\/.]{10}\s+)(.*)\n/m', $content, -1, PREG_SPLIT_DELIM_CAPTURE);
