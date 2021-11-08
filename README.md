@@ -29,6 +29,7 @@ Folgende Shortcodes sind implementiert:
  * [i4include](doc/i4include.md) erlaubt das einbetten von externen Inhalten
  * [i4list](doc/i4list.md) erstellt eine WordPress-typische Folien oder
    Aufgabenübersicht aus einer Vorgabe in einem einfachen und übersichtlichen Format
+ * [i4code](doc/i4code.md) für Quelltextbeispiele in Wordpress
 
 Details und Beispiele sind auf der Demowebseite unter
 [sys.cs.fau.de/lehre/ss22/demo](https://sys.cs.fau.de/lehre/ss22/demo) zu finden.
