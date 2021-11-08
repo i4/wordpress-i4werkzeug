@@ -38,6 +38,6 @@ Für die Entiwcklung/Erweiterung sollte nicht auf der produktiven WordPress-Inst
 gearbeitet werden, sonderen eine [lokale Instanz (z.B. via Docker)](doc/dev.md)
 verwendet werden.
 
-Außerdem gibt es in diesem Repi mit [`bin/wp-copy.sh`](doc/wp-copy.md] ein
+Außerdem gibt es in diesem Repi mit [`bin/wp-copy.sh`](doc/wp-copy.md) ein
 kleines Werkzeug um Seitenbäume von Lehrveranstaltungen in ein neues Semester
 zu kopieren.
