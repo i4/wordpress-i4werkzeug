@@ -68,7 +68,7 @@ function format($text) {
 
 /* Generiere eine Akkordionliste mit formatierten Elementen*/
 function generate($content, $name = '', $showdate = false, $uncover = null) {
-	$id_prefix = empty($name) ? 'el' : preg_replace('/[^a-z0-9]+/', '_', str_replace(array('ä', 'ö', 'ü'), array('ae', 'oe', 'ue'), strtolower($name)));
+	$id_prefix = empty($name) ? 'el' : \i4helper\to_anchortext($name);
 
 	$out = "[collapsibles]\n";
 	$matches = preg_split('/^(#(?!#)|[0-9-\/.]{10}\s+)(.*)\n/m', $content, -1, PREG_SPLIT_DELIM_CAPTURE);
