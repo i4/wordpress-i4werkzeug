@@ -1,0 +1,4 @@
+/* Deaktiviere Vorschau, da diese mit Kontakte, i4nav und i4include Probleme machen kann */
+div#preview-action {
+	display: none;
+}

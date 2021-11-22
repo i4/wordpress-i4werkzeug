@@ -36,4 +36,10 @@ add_shortcode(i4list\SHORTCODE_NAME, 'i4list\handler_function');
 add_shortcode(i4semester\SHORTCODE_NAME, 'i4semester\handler_function');
 add_shortcode(i4code\SHORTCODE_NAME, 'i4code\handler_function');
 add_shortcode(i4subnav\SHORTCODE_NAME, 'i4subnav\handler_function');
+
+// Eigene Styles
+function i4werkzeug_admin_style() {
+	wp_enqueue_style('admin-styles', plugins_url('styles/admin.css', __FILE__));
+}
+add_action('admin_enqueue_scripts', 'i4werkzeug_admin_style');
 ?>
