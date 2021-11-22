@@ -1,0 +1,11 @@
+div.i4univis_lectures table { 
+	border:none;
+}
+
+div.i4univis_lectures tr,
+div.i4univis_lectures td {
+	background-color: transparent;
+	border: none;
+	font-size: 1rem;
+	padding: 1px;
+}

@@ -17,6 +17,7 @@ require_once(I4WERKZEUG_PATH . 'includes/i4include.php');
 require_once(I4WERKZEUG_PATH . 'includes/i4list.php');
 require_once(I4WERKZEUG_PATH . 'includes/i4code.php');
 require_once(I4WERKZEUG_PATH . 'includes/i4subnav.php');
+require_once(I4WERKZEUG_PATH . 'includes/i4univis.php');
 
 // Filter registrieren
 add_filter('query_vars', 'i4include\query_vars');
@@ -36,10 +37,15 @@ add_shortcode(i4list\SHORTCODE_NAME, 'i4list\handler_function');
 add_shortcode(i4semester\SHORTCODE_NAME, 'i4semester\handler_function');
 add_shortcode(i4code\SHORTCODE_NAME, 'i4code\handler_function');
 add_shortcode(i4subnav\SHORTCODE_NAME, 'i4subnav\handler_function');
+add_shortcode(i4univis\SHORTCODE_NAME, 'i4univis\handler_function');
 
 // Eigene Styles
 function i4werkzeug_admin_style() {
-	wp_enqueue_style('admin-styles', plugins_url('styles/admin.css', __FILE__));
+	wp_enqueue_style('i4werkzeug-admin-style', plugins_url('styles/admin.css', __FILE__));
 }
 add_action('admin_enqueue_scripts', 'i4werkzeug_admin_style');
+function i4werkzeug_style() {
+	wp_enqueue_style('i4werkzeug-style-univis', plugins_url('styles/univis.css', __FILE__));
+}
+add_action('wp_enqueue_scripts', 'i4werkzeug_style');
 ?>

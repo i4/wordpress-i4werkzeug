@@ -95,6 +95,8 @@ function get($name = '', $format = 'long', $delta = null) {
 			return $winter ? ('WS'.$y) : ('SS'.$y);
 		case 'link':
 			return $winter ? ('ws'.$y) : ('ss'.$y);
+		case 'univis':
+			return '20' . $y . ($winter ? 'w' : 's');
 		default:
 			return $winter ? ('WS 20'.$y.'/'.$yn) : ('SS 20'.$y);
 	}
