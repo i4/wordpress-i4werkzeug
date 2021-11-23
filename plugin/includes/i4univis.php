@@ -4,6 +4,9 @@ namespace i4univis;
 /* Der Name des Shortcodes, wie er im Editor in WordPress verwendet werden muss: */
 const SHORTCODE_NAME = 'i4univis';
 
+/* Der Wert des Shortcode Attributs für automatische Semestererkennung anhand der Elternseiten */
+const SEMESTER_AUTO_DETECT_VALUE = 'auto';
+
 /* Der URL Prefix zur PRG Schnittstelle */
 const UNIVIS_PRG_URL = 'http://univis.uni-erlangen.de/prg?';
 
@@ -16,7 +19,11 @@ function handler_function($attr, $content = '') {
 	if (array_key_exists('codeset', $attr) === false) {
 		$attr['codeset'] = 'utf8';
 	}
-	// Prefix: Titel (falls angegeben.
+	// Automatische Semestererkennung anhand der Seitenhierarchie
+	if (array_key_exists('sem', $attr) && trim(strtolower($attr['sem'])) == SEMESTER_AUTO_DETECT_VALUE ) {
+		$attr['sem'] = \i4semester\get('', 'univis');
+	}
+	// Prefix: Titel (falls angegeben)
 	$prefix = empty($content) ? '' : '<h2 id="' . \i4helper\to_anchortext($content) . '">' . $content . '</h2>';
 	// UnivIS braucht Latin1 encoding
 	$attr = mb_convert_encoding($attr, 'LATIN1');
@@ -33,7 +40,7 @@ function handler_function($attr, $content = '') {
 		$urldata = file_get_contents($url);
 		if ($urldata === false) {
 			// ungültige URL
-			return $prefix . '[alert style="danger"]Der UnivIS-Aufruf (<a href="' . $url . '">' . $url . '</a>) schlug fehl![/alert]';
+			return $prefix . do_shortcode('[alert style="danger"]Der UnivIS-Aufruf (<a href="' . $url . '">' . $url . '</a>) schlug fehl![/alert]');
 		} else if (preg_match('@<tr><td valign="top" colspan=2><table border=0 width="100%" bgcolor="#ffffff" cellspacing=17 cellpadding=0>\n<tr><td>(.*)(?:<p>)?</td></tr>\n</table></td>\n</tr>@mus', $urldata, $match)) {
 			// Daten im passenden Format
 			$data = $match[1];
@@ -41,7 +48,7 @@ function handler_function($attr, $content = '') {
 			set_transient($transient, $data, CACHE_EXPIRATION);
 		} else {
 			// ungültige Antwortdaten
-			return $prefix . '[alert style="danger"]Die Antwort-Daten des UnivIS-Aufrufs (<a href="' . $url . '">' . $url . '</a>) sind ungültig![/alert]';
+			return $prefix . do_shortcode('[alert style="danger"]Die Antwort-Daten des UnivIS-Aufrufs (<a href="' . $url . '">' . $url . '</a>) sind ungültig![/alert]');
 		}
 	}
 	// Antwort zurückgeben

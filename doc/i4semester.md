@@ -24,6 +24,7 @@ Die unterstützten Attribute für diesen Shortcode sind:
     * `abbr` für die ganz kurze Form (**WS21**)
     * `link` für eine klein geschriebene kurze Form (**ws21**),
       welche so auch in WordPress URLs verwendet werden kann
+    * `univis` für die UnivIS Form (**2021w**)
     * und, standardmäßig (bei keiner oder ungültiger Angabe):
       Die Kurzform mit voller Jahreszahl (**WS 2021/22**)
 

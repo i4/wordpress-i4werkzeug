@@ -24,11 +24,17 @@ mit dem NFS-Pfad `/proj/i4wp/extern` interagieren.
 
 Folgende Shortcodes sind implementiert:
 
+ * [i4nav](doc/i4subnav.md) erlaubt die Anpassung der (automatisch generierten)
+   Seitennavigationsleiste
  * [i4semester](doc/i4semester.md) zur dynamischen Anzeige des Semesternamens
  * [i4link](doc/i4link.md) genieriert Verweise aus relativen Pfadangaben
+ * [i4univis](doc/i4univis.md) erlaubt flexibleres Einbetten von
+   [UnivIS-Inhalte](https://univis.fau.de/) als das
+   [RRZE-Pendant](https://www.wordpress.rrze.fau.de/plugins/fau-und-rrze-plugins/rrze-univis/)
  * [i4include](doc/i4include.md) erlaubt das einbetten von externen Inhalten
  * [i4list](doc/i4list.md) erstellt eine WordPress-typische Folien oder
-   Aufgabenübersicht aus einer Vorgabe in einem einfachen und übersichtlichen Format
+   Aufgabenübersicht aus einer Vorgabe in einem einfachen und übersichtlichen
+   Format
  * [i4code](doc/i4code.md) für Quelltextbeispiele in Wordpress
 
 Details und Beispiele sind auf der Demowebseite unter
