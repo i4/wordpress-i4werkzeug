@@ -23,6 +23,12 @@ require_once(I4WERKZEUG_PATH . 'includes/i4univis.php');
 add_filter('query_vars', 'i4include\query_vars');
 add_filter('init', 'i4include\rewrite_endpoint');
 add_filter('wp_list_pages', 'i4subnav\adapt_subnav', 10, 3);
+function i4_adapt_multilang_perms($metaCaps) {
+	// Sprachvarianten einer Seite auch durch Benutzer mit "Redakteurs"-Rechten bearbeiten lassen
+	$metaCaps['rrze_multilang_access_all_locales'] = 'manage_categories';
+	return $metaCaps;
+}
+add_filter('rrze_multilang_map_meta_cap', 'i4_adapt_multilang_perms');
 // Rewrite-Regel-Cache spülen wenn Plugin deaktiviert wird
 register_deactivation_hook( __FILE__, 'flush_rewrite_rules');
 // Registrierung der Verarbeitung bei i4include (vor der Ausgabe)
