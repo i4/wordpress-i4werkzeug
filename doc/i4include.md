@@ -121,6 +121,10 @@ Die boolschen `PARAMETER` sind optional, folgende sind definiert:
    Dies kann für die Fehlersuche bei der Seitenerstellung genutzt werden,
    ohne den Parameter wird lediglich Einbettung fehlgeschlagen bei einem Fehler
    angezeigt (die Details werden dann im Webserver geschrieben).
+ * `raw` verhindert, dass doppelte Zeilenenden (`\n\n`) vom WordPress-internen
+   [`wpautop`](https://developer.wordpress.org/reference/functions/wpautop/)
+   automatisch zu einem Absatz konvertiert werden (Standard: `false`, d.h.
+   `\n\n` wird zu `<p>...</p>`).
 
 
 Voraussetzung
