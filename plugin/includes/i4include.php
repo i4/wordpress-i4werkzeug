@@ -357,11 +357,16 @@ function shortcode_handler_function($attr, $content = '') {
 						unset($include_recursion[$key]);
 					}
 				}
-				// Ersetze Leerzeichen in speziellen Tag für wpautop, damit dieser daraus am Ende wieder newlines macht
+				// Ersetze jede Leerzeile in einen speziellen Tag für wpautop, damit dieser daraus am Ende wieder newlines macht
 				if (\i4helper\attribute_as_bool($attr, SHORTCODE_ATTR_RAW)) {
+					// Der HTML Kommentar `wpnl` ist ein magischer Code, welcher
+					// in https://developer.wordpress.org/reference/functions/wpautop/
+					// (Stand WordPress 5.8) benutzt wird, um gewisse Leerzeilen
+					// (z.B. in pre-Tags) beizubehalten -- am Ende von `wpautop`
+					// wird dies wieder in ein `\n` umgewandelt.
+					// Und genau dies machen wir uns zu nutze.
 					$result = str_replace(array("\r\n", "\r", "\n"), ' <!-- wpnl --> ', $result);
 				}
-
 				// Fertig - einzubettender Inhalt wird an WordPress zurück gegeben
 				return $result;
 			}
