@@ -1,0 +1,11 @@
+requires 'Path::Tiny';
+requires 'HTTP::Request';
+requires 'HTTP::Headers';
+requires 'LWP::UserAgent';
+requires 'JSON';
+requires 'IPC::Run';
+requires 'Linux::Inotify2';
+
+# Only required for debugging
+# requires 'Log::ger::App';
+# requires 'Log::ger::For::LWP';
