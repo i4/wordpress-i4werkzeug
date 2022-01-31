@@ -32,7 +32,7 @@ const SHORTCODE_NAME= 'i4hidden-text';
             return do_shortcode('[notice-attention]' . __('Please use a valid date format: Y-m-d H:i:s.', 'rrze-elements') . '[/notice-attention]' . $content);
         }
 
-        if (is_user_logged_in() || ($start != '' && $now <= $t_start) || ($end != '' && $now >= $t_end)) {
+        if (($start != '' && $now <= $t_start) || ($end != '' && $now >= $t_end)) {
             $output = '<p>' . do_shortcode($content) . '</p>';
         } elseif (is_user_logged_in()) {
             $output = '<p style="background-color:#ff000057;" title="i4hidden-text">' . do_shortcode($content) . '</p>';
