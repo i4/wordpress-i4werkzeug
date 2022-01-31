@@ -34,6 +34,8 @@ const SHORTCODE_NAME= 'i4hidden-text';
 
         if (is_user_logged_in() || ($start != '' && $now <= $t_start) || ($end != '' && $now >= $t_end)) {
             $output = '<p>' . do_shortcode($content) . '</p>';
+        } elseif (is_user_logged_in()) {
+            $output = '<p style="background-color:#ff000057;" title="i4hidden-text">' . do_shortcode($content) . '</p>';
         } else {
             $output = '';
         }
