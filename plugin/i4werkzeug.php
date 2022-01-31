@@ -18,6 +18,7 @@ require_once(I4WERKZEUG_PATH . 'includes/i4list.php');
 require_once(I4WERKZEUG_PATH . 'includes/i4code.php');
 require_once(I4WERKZEUG_PATH . 'includes/i4subnav.php');
 require_once(I4WERKZEUG_PATH . 'includes/i4univis.php');
+require_once(I4WERKZEUG_PATH . 'includes/i4hiddentext.php');
 
 // Filter registrieren
 add_filter('query_vars', 'i4include\query_vars');
@@ -44,6 +45,7 @@ add_shortcode(i4semester\SHORTCODE_NAME, 'i4semester\handler_function');
 add_shortcode(i4code\SHORTCODE_NAME, 'i4code\handler_function');
 add_shortcode(i4subnav\SHORTCODE_NAME, 'i4subnav\handler_function');
 add_shortcode(i4univis\SHORTCODE_NAME, 'i4univis\handler_function');
+add_shortcode(i4hiddentext\SHORTCODE_NAME, 'i4hiddentext\shortcodeHiddenText');
 
 // Eigene Styles
 function i4werkzeug_admin_style() {
