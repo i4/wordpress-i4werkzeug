@@ -36,7 +36,9 @@ Folgende Shortcodes sind implementiert:
    Aufgabenübersicht aus einer Vorgabe in einem einfachen und übersichtlichen
    Format
  * [i4code](doc/i4code.md) für Quelltextbeispiele in Wordpress
- * i4hidden-text versteckt Inhalte (wie das [RRZE-Pendant](https://www.wordpress.rrze.fau.de/plugins/fau-und-rrze-plugins/elements/hidden-text/), zeigt sie jedoch angemeldeten Nutzern (mit einem visuellen Hinweis) an
+ * [i4hidden-text](doc/i4hiddentext.md) versteckt Inhalte (wie das
+   [RRZE-Pendant](https://www.wordpress.rrze.fau.de/plugins/fau-und-rrze-plugins/elements/hidden-text/),
+   zeigt sie jedoch angemeldeten Nutzern (mit einem visuellen Hinweis) an
 
 Details und Beispiele sind auf der Demowebseite unter
 [sys.cs.fau.de/lehre/ss22/demo](https://sys.cs.fau.de/lehre/ss22/demo) zu finden.
