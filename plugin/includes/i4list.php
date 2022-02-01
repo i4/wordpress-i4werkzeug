@@ -85,7 +85,7 @@ function generate($content, $name = '', $showdate = false, $uncover = null) {
 
 		// Uncover = hidden-text
 		if ($timestamp !== false && is_numeric($uncover))
-			$out .= '[hidden-text end="' . date('Y-m-d', $timestamp - $uncover * 86400) . '"]' . "\n";
+			$out .= '[i4hidden-text end="' . date('Y-m-d', $timestamp - $uncover * 86400) . '"]' . "\n";
 
 		// Neues Akkordionelement
 		$out .= '[collapse title="' . esc_attr(trim($matches[$i + 1])) . '" name="' . $id . '"]' . "\n";
@@ -108,7 +108,7 @@ function generate($content, $name = '', $showdate = false, $uncover = null) {
 		}
 		$out .= "[/collapse]\n";
 		if ($timestamp !== false && is_numeric($uncover))
-			$out .= "[/hidden-text]\n";
+			$out .= "[/i4hidden-text]\n";
 	}
 	return $out . "[/collapsibles]\n";
 }

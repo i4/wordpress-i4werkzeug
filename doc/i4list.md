@@ -1,5 +1,5 @@
 Werkzeug `i4list`
-====================
+=================
 
 Ein häufiger Anwendungsfall in der Lehre ist das zeitgesteuerte Anzeigen von
 Vorlesungs-/Übungsfolien und Aufgaben.
@@ -10,13 +10,12 @@ verzichtet werden.
 
 Außerdem wurde je nach Veranstaltung teilweise mittels SSI ein zeitgesteuertes
 Anzeigen implementiert. Diese Funktionalität (bzw. genauer: ein Verstecken)
-wird über den [Hidden-Text-Shortcode](https://www.wordpress.rrze.fau.de/plugins/fau-und-rrze-plugins/elements/hidden-text/)
-ermöglicht.
+wird über den [i4Hidden-Text Shortcode](i4hiddentext.md) ermöglicht.
 
 Diese Shortcodes sind allerdings verhältnismäßig umständlich zu schreiben (und nicht sehr fehlertolerant):
 
     [collapsibles]
-    [hidden-text end="2021-10-17"]
+    [i4hidden-text end="2021-10-17"]
     [collapse title="1. Vorlesung" name="vl-1"]
     Vorlesung am Montag, 18. Oktober 2021
     
@@ -30,13 +29,13 @@ Diese Shortcodes sind allerdings verhältnismäßig umständlich zu schreiben (u
     [/accordion-item]
     [/accordion]
     [/collapse]
-    [/hidden-text]
-    [hidden-text end="2021-10-24"]
+    [/i4hidden-text]
+    [i4hidden-text end="2021-10-24"]
     [collapse title="2. Vorlesung" name="vl-2"]
     Vorlesung am Montag, 25. Oktober 2021
     ...
     [/collapse]
-    [/hidden-text]
+    [/i4hidden-text]
     [/collapsibles]
 
 Der Shortcode `i4list` schafft hier Abhilfe, in dem er die gleiche Ausgabe
