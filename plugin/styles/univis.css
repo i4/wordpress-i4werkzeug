@@ -30,3 +30,7 @@ div.i4univis_lectures td {
 	padding: 1px;
 }
 
+/* even empty td's with width=0 receive a padding */
+div.i4univis_lectures td[width="0"] {
+	display: none;
+}
