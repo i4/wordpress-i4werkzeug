@@ -66,7 +66,8 @@ Die unterstützten Attribute für diesen Shortcode sind:
  * `uncover` blendet, falls angegben, den Eintrag die angegbenen Anzahl an
    Tagen vor der Veranstaltung ein.
    So bedeutet `uncover=2`, dass der Eintrag 2 Tage vor dem angegebenen Datum
-   sichtbar sein soll.
+   sichtbar sein soll. Für **angemeldete Nutzer** ist der Eintrag weiterhin
+   jederzeit sichtbar!
 
 Als Inhalt wird kann eine sehr (sehr) vereinfachte Untermenge von Markdown
 verwendet werden:
