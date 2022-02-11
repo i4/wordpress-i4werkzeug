@@ -1,4 +1,7 @@
 /* Fix large FAU Person card */
+.fau-person.person-card {
+	justify-content: left !important;
+}
 .fau-person.person-card h3,
 .fau-person.person-card h3 span
 .fau-person.person-card .card-item h3,
