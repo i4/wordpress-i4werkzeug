@@ -1,0 +1,15 @@
+/* Fix large FAU Person card */
+.fau-person.person-card h3,
+.fau-person.person-card h3 span
+.fau-person.person-card .card-item h3,
+.fau-person.person-card .card-item h3 span {
+	font-size: 1rem !important;
+}
+.fau-person.person-card .card-item {
+	flex-basis: 250px !important;
+	padding: 15px !important;
+}
+.fau-person.person-card .card-item figure {
+	width:130px !important;
+	height:130px !important;
+}

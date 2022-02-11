@@ -1,0 +1,103 @@
+table#semplan td {
+	color: #444;
+	background: none;
+	padding: 5px;
+}
+table#semplan tr.nodelimiter td {
+	border-top: 2px solid #f2f2f2;
+}
+
+/* Kalenderwochenangabe */
+table#semplan td.kw {
+	width: 2em;
+}
+table#semplan td.abgabe {
+	color: #fff !important;
+	background-color: var(--color-rw-dunkelste);
+}
+
+/* Tafelübung (generisch) */
+table#semplan td.uebung {
+	color: #000;
+	font-weight: bold;
+	background-color: var(--color-nat-ci-hell);
+}
+table#semplan span.uebung {
+	color: var(--color-nat-dunkler);
+}
+/* Seminar Übung */
+table#semplan td.sem,
+table#semplan span.sem {
+	background-color: var(--color-nat-ci-hell);
+}
+/* Ferien */
+table#semplan td.ferien {
+	background-color: var(--color-tf-ci-hell2);
+	font-style: italic;
+}
+/* Vorlesung (generisch) */
+table#semplan td.vl {
+	color: #fff !important;
+	font-weight: bold;
+	background-color: var(--color-med-dunkelste);
+}
+table#semplan span.vl {
+	color: var(--color-med-dunkelste);
+}
+
+/* Aufgabe 0 */
+table#semplan td.a0 {
+	background-color: var(--color-phil-ci-hell2);
+}
+table#semplan span.a0 a {
+	color: var(--color-phil-dunkelste);
+	text-decoration-color: var(--color-phil-dunkelste);
+}
+/* Tafeluebung zu Aufgabe 0 */
+table#semplan td.t0 {
+	font-weight: bold;
+	background-color: var(--color-phil-ci-hell);
+}
+/* Rechneruebung zu Aufgabe 0 */
+table#semplan td.r0 {
+	background-color: var(--color-phil-ci-hell);
+}
+
+/* Aufgabe 1 */
+table#semplan td.a1 {
+	background-color: var(--color-nat-ci-hell2);
+}
+table#semplan span.a1 a {
+	color: var(--color-nat-dunkelste);
+	text-decoration-color: var(--color-nat-dunkelste);
+}
+/* Tafeluebung zu Aufgabe 1 */
+table#semplan td.t1 {
+	font-weight: bold;
+	background-color: var(--color-nat-ci-hell);
+}
+/* Rechneruebung zu Aufgabe 0 */
+table#semplan td.r1 {
+	background-color: var(--color-nat-ci-hell);
+}
+
+/* Datumsangabe oben */
+table#semplan td.date {
+	font-size: 60%;
+	border-top: 2px solid #f2f2f2;
+	min-width: 80px;
+}
+/* Themen (rechts) */
+table#semplan td.topic {
+	font-style: italic;
+	background-color: var(--color-ContentBorders);
+}
+table#semplan span.topiclabel {
+	font-weight: bold;
+}
+/* Verstecke spalten im mobile mode um die Tabelle zu verkleinern */
+@media (max-width: 991px) {
+	table#semplan .nomobile {
+		display: none;
+	}
+}
