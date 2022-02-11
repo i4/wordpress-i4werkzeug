@@ -16,3 +16,171 @@
 	width:130px !important;
 	height:130px !important;
 }
+
+
+
+/***** BEGIN I4's specially prepared responsive tables ******/
+.i4responsivetable {
+	max-width: 100%;
+	hyphens: auto;
+}
+
+.i4responsivetable a {
+	overflow-wrap: anywhere;
+}
+
+.i4responsivetable tr.part_number {
+	background: var(--color-ContentBorders);
+	font-weight: bold;
+}
+.i4responsivetable tr.part_number td {
+	color: var(--color-Text);
+}
+
+@media screen and (max-width: 45em) {
+	/* Only for i4ezs/vorlesung to correctly handle the colspaned section headers */
+	.i4responsivetable tr.part_number {
+		display: block !important;
+		width: 100%;
+		background: var(--color-ContentBorders);
+	}
+	.i4responsivetable tr.part_number {
+		display: block !important;
+		width: 100%;
+		color: black;
+		font-weight; bold;
+		/* background: #e9edf2; */
+		background: var(--color-ContentBorders);
+	}
+	.i4responsivetable tr.part_number td {
+		/* override theme default (style.css), which displays a background color
+		   causing multiline text to hide itself partially */
+		background: none !important;
+	}
+	.i4responsivetable tr.part_number > td::before {
+		content: "" !important;
+		padding-right: 0em !important;
+	}
+	.i4responsivetable tr.part_number > td {
+		display: inline !important;
+		border: none;
+	}
+	.i4responsivetable tr.part_number > td:first-child {
+		padding-left: 0.2em !important;
+	}
+
+
+	/* General styling for all responsive tables
+	 * Based on https://wiki.selfhtml.org/wiki/HTML/Tabellen/Responsive_Gestaltung
+	 * Style tablecells as blocks so they flow correctly
+	 */
+	.i4resposivetable tr, .i4responsivetable td {
+		display: block;
+	}
+
+	.i4responsivetable thead {
+		display: none;
+	}
+
+	.i4responsivetable tr {
+		padding: 1em;
+		border-top: 0 none;
+	}
+
+	.i4responsivetable th {
+		padding: 0;
+	}
+
+	.i4responsivetable td {
+		padding: 1em 0 0;
+		/* Make sure that after a linebreak, all further entries are indented */
+		text-align: left !important;
+		text-indent: -1em;
+		padding-left: 2em !important;
+	}
+
+	.i4responsivetable td:last-child {
+		padding-bottom: 1em;
+	}
+
+	/* If we have inserted a label, style it a bit and make sure there is some padding to the data entries */
+	.i4responsivetable td::before {
+		font-weight: bold;
+		padding-right: 1em;
+		white-space: pre;
+		min-width: 100em;
+	}
+	/* wordpress/hidden-text ocassionally inserts <p> tags. make sure they do not show */
+	.i4responsivetable td p {
+		display: inline;
+	}
+
+	/* Generated section:
+
+	   perl -e 'print ".i4responsivetable td:nth-child($_)::before {\n\tcontent: var(--colheader$_);\n}\n" for (1..20)'
+
+	   Allows to set header fields when in block-display mode.
+	 */
+	.i4responsivetable td:nth-child(1)::before {
+		content: var(--colheader1);
+	}
+	.i4responsivetable td:nth-child(2)::before {
+		content: var(--colheader2);
+	}
+	.i4responsivetable td:nth-child(3)::before {
+		content: var(--colheader3);
+	}
+	.i4responsivetable td:nth-child(4)::before {
+		content: var(--colheader4);
+	}
+	.i4responsivetable td:nth-child(5)::before {
+		content: var(--colheader5);
+	}
+	.i4responsivetable td:nth-child(6)::before {
+		content: var(--colheader6);
+	}
+	.i4responsivetable td:nth-child(7)::before {
+		content: var(--colheader7);
+	}
+	.i4responsivetable td:nth-child(8)::before {
+		content: var(--colheader8);
+	}
+	.i4responsivetable td:nth-child(9)::before {
+		content: var(--colheader9);
+	}
+	.i4responsivetable td:nth-child(10)::before {
+		content: var(--colheader10);
+	}
+	.i4responsivetable td:nth-child(11)::before {
+		content: var(--colheader11);
+	}
+	.i4responsivetable td:nth-child(12)::before {
+		content: var(--colheader12);
+	}
+	.i4responsivetable td:nth-child(13)::before {
+		content: var(--colheader13);
+	}
+	.i4responsivetable td:nth-child(14)::before {
+		content: var(--colheader14);
+	}
+	.i4responsivetable td:nth-child(15)::before {
+		content: var(--colheader15);
+	}
+	.i4responsivetable td:nth-child(16)::before {
+		content: var(--colheader16);
+	}
+	.i4responsivetable td:nth-child(17)::before {
+		content: var(--colheader17);
+	}
+	.i4responsivetable td:nth-child(18)::before {
+		content: var(--colheader18);
+	}
+	.i4responsivetable td:nth-child(19)::before {
+		content: var(--colheader19);
+	}
+	.i4responsivetable td:nth-child(20)::before {
+		content: var(--colheader20);
+	}
+	/* /Generated */
+}
+/***** END I4's specially prepared responsive tables ******/
