@@ -48,7 +48,7 @@
 		display: block !important;
 		width: 100%;
 		color: black;
-		font-weight; bold;
+		font-weight: bold;
 		/* background: #e9edf2; */
 		background: var(--color-ContentBorders);
 	}
