@@ -53,12 +53,18 @@ function adapt_subnav($output, $parsed_args, $pages) {
 	);
 	$excludelist = array_map(fn($p) => $p->ID, $excludelist);
 
-	// Include our excludes, along with excludes that were potentially passed from the outside
-	if(!isset($parsed_args['exclude'])) {
-		$parsed_args['exclude'] = "";
+	// Append them to the exclude_tree field
+	// Please note:
+	//    Strictly speaking, wp_list_pages does not specify the usage of an exclude_tree parameter
+	//    In practice (as of now), all parameters are passed to get_pages, which does understand
+	//    both 'exclude' and 'exclude_tree'. And for our usage, we have to hide whole subtrees,
+	//    so we go with exclude_tree. If too many entries start to appear in the navlist, you
+	//    might want to look here.
+	if(!isset($parsed_args['exclude_tree'])) {
+		$parsed_args['exclude_tree'] = "";
 	}
-	$exclude_param = wp_parse_id_list($parsed_args['exclude']);
-	$parsed_args['exclude'] = implode(',', array_merge($exclude_param, $excludelist));
+	$exclude_tree = wp_parse_id_list($parsed_args['exclude_tree']);
+	$parsed_args['exclude_tree'] = implode(',', array_merge($exclude_tree, $excludelist));
 
 	// Now rerun the listing, using a custom walker to insert synthetic pages
 	$parsed_args['walker'] = new Walker($pages);
