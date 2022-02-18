@@ -29,11 +29,16 @@
 	overflow-wrap: anywhere;
 }
 
+.i4responsivetable tr:nth-child(odd) td {
+	background: #f9f9f9;
+}
+
 .i4responsivetable tr.part_number {
-	background: var(--color-ContentBorders);
+	background: var(--color-StandardHellgrau);
 	font-weight: bold;
 }
 .i4responsivetable tr.part_number td {
+	background: var(--color-StandardHellgrau);
 	color: var(--color-Text);
 }
 
@@ -42,15 +47,14 @@
 	.i4responsivetable tr.part_number {
 		display: block !important;
 		width: 100%;
-		background: var(--color-ContentBorders);
+		background: var(--color-StandardHellgrau);
 	}
 	.i4responsivetable tr.part_number {
 		display: block !important;
 		width: 100%;
 		color: black;
 		font-weight: bold;
-		/* background: #e9edf2; */
-		background: var(--color-ContentBorders);
+		background: var(--color-StandardHellgrau);
 	}
 	.i4responsivetable tr.part_number td {
 		/* override theme default (style.css), which displays a background color
