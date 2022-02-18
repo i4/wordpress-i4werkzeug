@@ -201,7 +201,11 @@ class Walker extends \Walker_Page {
 
 	// Emit all items $items, irrespective of their menu-list--order value
 	function generate_manual_navlist(&$output, $page) {
-		$items = $this->page_subnaventries[$page->ID];
+		if (array_key_exists($page->ID, $this->page_subnaventries)) {
+			$items = $this->page_subnaventries[$page->ID];
+		} else {
+			$items = array();
+		}
 		foreach($items as $item) {
 			$this->emit_navlist_link($output, $page, $item);
 		}
