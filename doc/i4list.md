@@ -68,6 +68,10 @@ Die unterstützten Attribute für diesen Shortcode sind:
    So bedeutet `uncover=2`, dass der Eintrag 2 Tage vor dem angegebenen Datum
    sichtbar sein soll. Für **angemeldete Nutzer** ist der Eintrag weiterhin
    jederzeit sichtbar!
+ * `load` steuert, ob die Collapsibles eingeklappt oder ausgeklappt sein sollen.
+   Unterstützte Werte sind `none` (default, alles eingeklappt), `all` (alles
+   ausgeklappt) und `last` (die Elemente mit dem *aktuellsten, sichtbaren Datum*
+   werden ausgeklappt).
 
 Als Inhalt wird kann eine sehr (sehr) vereinfachte Untermenge von Markdown
 verwendet werden:

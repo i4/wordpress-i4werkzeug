@@ -7,12 +7,14 @@ const SHORTCODE_NAME= 'i4list';
 /* Shortcode-attribut mit dem Namen für die Liste */
 const SHORTCODE_ATTR_NAME = 'name';
 
-
 /* Der Name des Shortcode-attributs, mit dem die Datumsanzeige aktiviert werden kann */
 const SHORTCODE_ATTR_SHOWDATE = 'showdate';
 
 /* Der Name des Shortcode-attributs, mit dem das einblenden der Seite gesteuert werden kann */
 const SHORTCODE_ATTR_UNCOVER = 'uncover';
+
+/* Der Name des Shortcode-attributs, mit dem das Aufklappen (none, last, all bzw. open) gesteuert wird */
+const SHORTCODE_ATTR_LOAD = 'load';
 
 
 /* Deutsche Namen der Wochentage (für den Fall, dass wir die locals nicht haben) */
@@ -67,48 +69,71 @@ function format($text) {
 }
 
 /* Generiere eine Akkordionliste mit formatierten Elementen*/
-function generate($content, $name = '', $showdate = false, $uncover = null) {
+function generate($content, $name = '', $showdate = false, $uncover = null, $load = null) {
+	$load = is_string($load) ? strtolower(trim($load)) : 'none';
+
 	$id_prefix = empty($name) ? 'el' : \i4helper\to_anchortext($name);
 
 	$out = "[collapsibles]\n";
 	$matches = preg_split('/^(#(?!#)|[0-9-\/.]{10}\s+)(.*)\n/m', $content, -1, PREG_SPLIT_DELIM_CAPTURE);
+
+	$entries = array();
+	$last = 0;
 	for ($i = 1; $i + 2 < count($matches); $i += 3) {
-		// Parse timestamp
-		$timestamp = $matches[$i] == '#' ? false : strtotime($matches[$i]);
+		$timestamp_entry = false;
+		$visible = true;
+		if ($matches[$i] != '#') {
+			// Parse timestamp
+			$timestamp = strtotime($matches[$i]);
+			// Change to midday (to avoid issues with leap seconds)
+			$timestamp_entry = $timestamp + 43200;
+			// Check if visible, and, if so, find last uncovered timestamp
+			if (is_numeric($uncover)) {
+				if ($timestamp - $uncover * 86400 > time())
+					$visible = false;
+				elseif ($timestamp > $last)
+					$last = $timestamp_entry;
+			}
+		}
+		// Store entry
+		array_push($entries, array(
+				'id' => $id_prefix . '-' . (($i - 1) / 3),
+				'visible' => $visible,
+				'timestamp' => $timestamp_entry,
+				'title' => $matches[$i + 1],
+				'content' => $matches[$i + 2]
+			)
+		);
+	}
 
-		// Setze auf Mitte des Tages (um fehler mit Schaltsekunden zu vermeiden)
-		if ($timestamp !== false)
-			$timestamp += 43200;
-
-		//.Generiere id
-		$id = $id_prefix . '-' . (($i - 1) / 3);
-
-		// Uncover = hidden-text
-		if ($timestamp !== false && is_numeric($uncover))
-			$out .= '[i4hidden-text end="' . date('Y-m-d', $timestamp - $uncover * 86400) . '"]' . "\n";
+	foreach ($entries as $entry) {
+		// Hidden?
+		if ($entry['visible'] === false && !is_user_logged_in())
+			continue;
 
 		// Neues Akkordionelement
-		$out .= '[collapse title="' . esc_attr(trim($matches[$i + 1])) . '" name="' . $id . '"]' . "\n";
+		$out .= '[collapse title="' . esc_attr(trim($entry['title'])) . '"';
+		if ($load == "all" || $load == "open" || ($load == "last" && $entry['timestamp'] == $last))
+			$out .= ' load="open"';
+		$out .= ' name="' . $entry['id'] . '"]' . "\n";
 
 		// Zeige Datum
-		if ($timestamp !== false && $showdate)
-			$out .= $name . ' am ' . WEEKDAYS[date('w', $timestamp)] . date(', j. ', $timestamp) . MONTHS[date('n', $timestamp)] . date(' Y', $timestamp) . "\n\n";
+		if ($entry['timestamp'] !== false && $showdate)
+			$out .= $name . ' am ' . WEEKDAYS[date('w', $entry['timestamp'])] . date(', j. ', $entry['timestamp'] ) . MONTHS[date('n', $entry['timestamp'] )] . date(' Y', $entry['timestamp']) . "\n\n";
 
-		$blocks = preg_split('/^#[#]+\s*(.*)\\n/m', $matches[$i + 2], -1, PREG_SPLIT_DELIM_CAPTURE);
+		$blocks = preg_split('/^#[#]+\s*(.*)\\n/m', $entry['content'], -1, PREG_SPLIT_DELIM_CAPTURE);
 		$out .= format($blocks[0]);
 		if (count($blocks) > 1) {
 			$out .= "[accordion]\n";
 			// Optional noch unter-akkordions
 			for ($j = 1; $j + 1 < count($blocks); $j += 2) {
-				$out .= '[accordion-item title="' . $blocks[$j] . '" name="' .$id . '-' . (($j - 1) / 2) . '"]' . "\n"
-				     . format($blocks[$j + 1])
-				     . "[/accordion-item]\n";
+				$out .= '[accordion-item title="' . $blocks[$j] . '" name="' . $entry['id'] . '-' . (($j - 1) / 2) . '"]' . "\n"
+						. format($blocks[$j + 1])
+						. "[/accordion-item]\n";
 			}
 			$out .= "[/accordion]\n";
 		}
 		$out .= "[/collapse]\n";
-		if ($timestamp !== false && is_numeric($uncover))
-			$out .= "[/i4hidden-text]\n";
 	}
 	return $out . "[/collapsibles]\n";
 }
@@ -116,6 +141,6 @@ function generate($content, $name = '', $showdate = false, $uncover = null) {
 
 /* Behandlungsfunktion, welche von WordPress für jeden i4list Shortcode aufgerufen wird */
 function handler_function($attrs, $content, $tag) {
-	return do_shortcode(generate($content, \i4helper\attribute($attrs, SHORTCODE_ATTR_NAME, ''), \i4helper\attribute_as_bool($attrs, SHORTCODE_ATTR_SHOWDATE), \i4helper\attribute($attrs, SHORTCODE_ATTR_UNCOVER)));
+	return do_shortcode(generate($content, \i4helper\attribute($attrs, SHORTCODE_ATTR_NAME, ''), \i4helper\attribute_as_bool($attrs, SHORTCODE_ATTR_SHOWDATE), \i4helper\attribute($attrs, SHORTCODE_ATTR_UNCOVER), \i4helper\attribute($attrs, SHORTCODE_ATTR_LOAD)));
 }
 ?>
