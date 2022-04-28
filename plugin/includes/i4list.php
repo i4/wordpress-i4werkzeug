@@ -10,6 +10,9 @@ const SHORTCODE_ATTR_NAME = 'name';
 /* Der Name des Shortcode-attributs, mit dem die Datumsanzeige aktiviert werden kann */
 const SHORTCODE_ATTR_SHOWDATE = 'showdate';
 
+/* Der Name des Shortcode-attributs, der die Verarbeitung weiterer Shortcodes im Zieldokument vor der Markdowninterpretation erlaubt */
+const SHORTCODE_ATTR_SHORTCODE = 'shortcodes';
+
 /* Der Name des Shortcode-attributs, mit dem das einblenden der Seite gesteuert werden kann */
 const SHORTCODE_ATTR_UNCOVER = 'uncover';
 
@@ -141,6 +144,9 @@ function generate($content, $name = '', $showdate = false, $uncover = null, $loa
 
 /* Behandlungsfunktion, welche von WordPress für jeden i4list Shortcode aufgerufen wird */
 function handler_function($attrs, $content, $tag) {
+	if (\i4helper\attribute_as_bool($attr, SHORTCODE_ATTR_SHORTCODE)) {
+		$content = do_shortcode($content);
+	}
 	return do_shortcode(generate($content, \i4helper\attribute($attrs, SHORTCODE_ATTR_NAME, ''), \i4helper\attribute_as_bool($attrs, SHORTCODE_ATTR_SHOWDATE), \i4helper\attribute($attrs, SHORTCODE_ATTR_UNCOVER), \i4helper\attribute($attrs, SHORTCODE_ATTR_LOAD)));
 }
 ?>

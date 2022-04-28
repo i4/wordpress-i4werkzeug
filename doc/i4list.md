@@ -9,8 +9,8 @@ zugunsten von [Accordions](https://www.wordpress.rrze.fau.de/plugins/fau-und-rrz
 verzichtet werden.
 
 Außerdem wurde je nach Veranstaltung teilweise mittels SSI ein zeitgesteuertes
-Anzeigen implementiert. Diese Funktionalität (bzw. genauer: ein Verstecken)
-wird über den [i4Hidden-Text Shortcode](i4hiddentext.md) ermöglicht.
+Anzeigen implementiert; Diese Funktion kann mit diesem Werkzeug (analog zum
+[i4Hidden-Text Shortcode](i4hiddentext.md)) realisiert werden.
 
 Diese Shortcodes sind allerdings verhältnismäßig umständlich zu schreiben (und nicht sehr fehlertolerant):
 
@@ -63,6 +63,11 @@ Die unterstützten Attribute für diesen Shortcode sind:
  * `showdate` ist ein boolsches Attribut, welches, wenn wahr, bei Einträgen mit
    Datumsnotation zuerst den namen gefolgt von einem lesbaren Datum in der Form
    *Wochentag, Tag. Monat Jahr* ausgibt.
+ * `shortcodes` ist ein boolsches Attribut, welches, wenn wahr, die frühzeitige
+   Evaluation von Shortcodes (z.B. von [i4include Shortcode](i4include.md))
+   durchführt und das Ergebnis bei der Interpretation der Markupsprache
+   berücksichtigt. Ohne Angabe dieses Attributs werden Shortcodes lediglich im
+   Nachgang ausgewertet.
  * `uncover` blendet, falls angegben, den Eintrag die angegbenen Anzahl an
    Tagen vor der Veranstaltung ein.
    So bedeutet `uncover=2`, dass der Eintrag 2 Tage vor dem angegebenen Datum
