@@ -144,7 +144,7 @@ function generate($content, $name = '', $showdate = false, $uncover = null, $loa
 
 /* Behandlungsfunktion, welche von WordPress für jeden i4list Shortcode aufgerufen wird */
 function handler_function($attrs, $content, $tag) {
-	if (\i4helper\attribute_as_bool($attr, SHORTCODE_ATTR_SHORTCODE)) {
+	if (\i4helper\attribute_as_bool($attrs, SHORTCODE_ATTR_SHORTCODE)) {
 		$content = do_shortcode($content);
 	}
 	return do_shortcode(generate($content, \i4helper\attribute($attrs, SHORTCODE_ATTR_NAME, ''), \i4helper\attribute_as_bool($attrs, SHORTCODE_ATTR_SHOWDATE), \i4helper\attribute($attrs, SHORTCODE_ATTR_UNCOVER), \i4helper\attribute($attrs, SHORTCODE_ATTR_LOAD)));
