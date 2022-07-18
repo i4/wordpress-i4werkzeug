@@ -20,7 +20,12 @@
 	min-height: 130px;
 	min-width: 130px;
 }
-
+.fau-person.person-card .card-item:hover img,
+.fau-person.person-card .card-item:focus img {
+	min-width: 140px;
+	min-height: 140px;
+	border: none;
+}
 
 /***** BEGIN I4's specially prepared responsive tables ******/
 .i4responsivetable {
