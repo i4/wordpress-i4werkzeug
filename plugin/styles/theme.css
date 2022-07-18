@@ -16,7 +16,10 @@
 	width:130px !important;
 	height:130px !important;
 }
-
+.fau-person.person-card .card-item figure img {
+	min-height: 130px;
+	min-width: 130px;
+}
 
 
 /***** BEGIN I4's specially prepared responsive tables ******/
