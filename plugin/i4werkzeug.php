@@ -60,6 +60,7 @@ function i4werkzeug_style() {
 	wp_enqueue_style('i4werkzeug-style-theme', plugins_url('styles/theme.css', __FILE__));
 	wp_enqueue_style('i4werkzeug-style-univis', plugins_url('styles/univis.css', __FILE__));
 	wp_enqueue_style('i4werkzeug-style-semplan', plugins_url('styles/semplan.css', __FILE__));
+	wp_enqueue_style('i4werkzeug-style-timetable', plugins_url('styles/timetable.css', __FILE__));
 }
 add_action('wp_enqueue_scripts', 'i4werkzeug_style');
 ?>

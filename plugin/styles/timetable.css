@@ -1,0 +1,36 @@
+table#timetable th {
+	text-align: center;
+}
+table#timetable td {
+	color: #444;
+	background: none;
+	border: 1px solid var(--color-StandardHellgrau);
+	border-collapse: collapse;
+	padding: 5px;
+	width: 18%;
+	height: 8ex;
+}
+table#timetable td.vl, table#timetable td.vl a {
+	color: #fff !important;
+	background-color: var(--color-med-dunkelste);
+}
+table#timetable td.rueplus {
+	background-color: var(--color-phil-ci-hell2);
+}
+table#timetable td.tue {
+	background-color: var(--color-phil-ci-hell);
+}
+table#timetable td.rue {
+	background-color: var(--color-phil-ci-hell);
+}
+table#timetable td.time {
+	font-weight: bold;
+	background-color: var(--color-ContentBorders);
+	width: 10% !important;
+	text-align: center;
+	vertical-align: top;
+}
+table#timetable td div.room {
+	font-size: 80%;
+	text-align: right;
+}
