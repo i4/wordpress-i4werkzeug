@@ -60,7 +60,7 @@ function format($text) {
 	// Horizontale Linie
 	$text = preg_replace('/^\s*(--[-]+|&#8212;)\s*$/m', '<hr>', $text);
 	// Links (absolut)
-	$text = preg_replace('#\[(.+?)\]\((http[s]://.+?)\)#i','<a href="\2">\1</a>', $text);
+	$text = preg_replace('#\[(.+?)\]\((http[s]?://.+?)\)#i','<a href="\2">\1</a>', $text);
 	// Links (relativ)
 	$text = preg_replace_callback('#\[(.*?)\]\((.+?)\)#i',
 		function ($match) {
