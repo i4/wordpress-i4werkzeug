@@ -27,6 +27,13 @@
 	border: none;
 }
 
+/* Improve multi level navigation hierarchy visibility */
+@media (min-width: 768px) {
+	#nav-wrapper ul.nav ul.level2 a.has-sub {
+		font-weight: 550;
+	}
+}
+
 /***** BEGIN I4's specially prepared responsive tables ******/
 .i4responsivetable {
 	max-width: 100%;
