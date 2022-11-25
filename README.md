@@ -53,3 +53,7 @@ automatisch (alle 15 Minuten) auf dem WordPress Server `i4wp` veröffentlicht!
 Außerdem gibt es in diesem Repo mit [`bin/wp-copy.sh`](doc/wp-copy.md) ein
 kleines Werkzeug um Seitenbäume von Lehrveranstaltungen in ein neues Semester
 zu kopieren.
+
+Weiterhin gibt es mit [`dl_intern.php`](intern/README.md) eine Erweiterung um
+Dateien unterhalb eines bestimmten Verzeichnis nur für angemeldete (oder sich
+in einem bestimmten Netzwerk befindliche) Nutzer ausliefern zu können.
