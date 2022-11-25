@@ -90,14 +90,14 @@ if (!is_user_logged_in() && !check_acl($_SERVER['REMOTE_ADDR'], NONAUTH_IP_RANGE
 }
 
 // Check file
-if (empty(INTERN_BASE_DIR) || !array_key_exists('file', $_GET) || empty($_GET[ 'file' ])) {
+if (empty(INTERN_BASE_DIR) || !array_key_exists('file', $_REQUEST) || empty($_REQUEST[ 'file' ])) {
 	status_header(404);
 	wp_die('<h2>Oh-oh...</h2>Entweder stimmt die Konfiguration nicht oder du hast keine Datei angegeben!', "Datei nicht gefunden", array('response' => 404));
 }
-$file = realpath(INTERN_BASE_DIR . $_GET['file']);
+$file = realpath(INTERN_BASE_DIR . $_REQUEST['file']);
 if (empty($file) || substr($file, 0, strlen(INTERN_BASE_DIR)) != INTERN_BASE_DIR || !is_file($file)) {
 	status_header(404);
-	wp_die('<h2>Upsi...</h2>Konnte den Dateipfad <tt>'.INTERN_BASE_NAME.$_GET['file'].'</tt> leider nicht finden!', "Datei nicht gefunden", array('response' => 404));
+	wp_die('<h2>Upsi...</h2>Konnte den Dateipfad <tt>'.esc_html(INTERN_BASE_NAME.$_REQUEST['file']).'</tt> leider nicht finden!', "Datei nicht gefunden", array('response' => 404));
 }
 
 // File information header
