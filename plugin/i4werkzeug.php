@@ -41,6 +41,11 @@ add_action('wp_insert_post', 'i4subnav\action_insert_post', 10, 3);
 // https://make.wordpress.org/core/2020/06/26/wordpress-5-5-better-fine-grained-control-of-redirect_guess_404_permalink/
 add_filter( 'do_redirect_guess_404_permalink', '__return_false' );
 
+// Disable wpautop
+// https://developer.wordpress.org/reference/functions/wpautop/#more-information
+remove_filter('the_content', 'wpautop');
+remove_filter('the_excerpt', 'wpautop');
+
 // Registriere Shortcodes in WordPress
 add_shortcode(i4include\SHORTCODE_NAME, 'i4include\shortcode_handler_function');
 add_shortcode(i4link\SHORTCODE_NAME, 'i4link\handler_function');
