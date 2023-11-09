@@ -35,7 +35,7 @@
 
 	/* Keep image aspect ration on blog image */
 	.news-details .post-image img {
-    	max-height: none;
+		max-height: none !important;
 	}
 }
 
