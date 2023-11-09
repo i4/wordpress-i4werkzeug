@@ -27,10 +27,15 @@
 	border: none;
 }
 
-/* Improve multi level navigation hierarchy visibility */
 @media (min-width: 768px) {
+	/* Improve multi level navigation hierarchy visibility */
 	#nav-wrapper ul.nav ul.level2 a.has-sub {
 		font-weight: 550;
+	}
+
+	/* Keep image aspect ration on blog image */
+	.news-details .post-image img {
+    	max-height: none;
 	}
 }
 
