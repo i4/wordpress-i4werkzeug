@@ -27,7 +27,7 @@ Die unterstützten Attribute für diesen Shortcode sind:
    aktuelle Semester umgeschwenkt (z.B. bei einer Unterseite von Forschung).
  * `name` gibt den anzuzeigenden Text des Links an. Ohne dieses Attribut wird
    schlicht der Pfad (oder, falls leer, Link) angezeigt.
- * `extern` ist ein boolsches Attribut, welches, wenn wahr, nicht auf WordPress,
+ * `extern` ist ein boolsches Attribut, welches, wenn wahr (`extern=true`), nicht auf WordPress,
    sondern auf Dateien im NFS (/proj/i4wp/extern/) verweist und sich somit z.B.
    für Folien im PDF-Format eignet.
    Dies ist unkompliziert möglich, da die WordPress-Seiten-Adressen und die
