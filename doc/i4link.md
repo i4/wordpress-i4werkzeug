@@ -25,8 +25,8 @@ Die unterstützten Attribute für diesen Shortcode sind:
    aktuelle Semester zu bekommen (eine Unterseite vom * Lehre / Sommmersemester 2022*
    verweist automatisch auf Kurse dieses Semester), andernfalls wird auf das
    aktuelle Semester umgeschwenkt (z.B. bei einer Unterseite von Forschung).
- * `name` gibt den anzuzeigenden Text des Links an. Ohne dieses Attribut wird
-   schlicht der Pfad (oder, falls leer, Link) angezeigt.
+ * `name` gibt den anzuzeigenden Text des Links an (das was normal zwischen `<a>` und `</a>` steht). Ohne dieses Attribut wird
+   schlicht der Pfad (oder, falls leer, Link) angezeigt. HTML Tags wie `<code>` werden im Feld **nicht** interpretiert.
  * `extern` ist ein boolsches Attribut, welches, wenn wahr (`extern=true`), nicht auf WordPress,
    sondern auf Dateien im NFS (/proj/i4wp/extern/) verweist und sich somit z.B.
    für Folien im PDF-Format eignet.
