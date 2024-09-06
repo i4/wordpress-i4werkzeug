@@ -357,6 +357,7 @@ function shortcode_handler_function($attr, $content = '') {
 						unset($include_recursion[$key]);
 					}
 				}
+/*
 				// Ersetze jede Leerzeile in einen speziellen Tag für wpautop, damit dieser daraus am Ende wieder newlines macht
 				if (\i4helper\attribute_as_bool($attr, SHORTCODE_ATTR_RAW)) {
 					// Der HTML Kommentar `wpnl` ist ein magischer Code, welcher
@@ -367,6 +368,7 @@ function shortcode_handler_function($attr, $content = '') {
 					// Und genau dies machen wir uns zu nutze.
 					$result = str_replace(array("\r\n", "\r", "\n"), ' <!-- wpnl --> ', $result);
 				}
+*/
 				// Fertig - einzubettender Inhalt wird an WordPress zurück gegeben
 				return $result;
 			}
