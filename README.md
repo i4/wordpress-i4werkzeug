@@ -7,7 +7,7 @@ an unsere Bedürfnisse anpasst, insbesondere:
 
  * Dateien (z.B. PDF-Folien) sollen über NFS bereitgestellt werden, da diese
    häufig mit Skriptunterstützung generiert und platziert werden — ein
-   händischer Upload in der WordPress-Adminweboberfläche soll verhindert werden.
+   händisches Hochladen in der WordPress-Adminweboberfläche soll verhindert werden.
  * Zusätzlich müssen häufiger Listen mit Verweisen auf solche Dateien angepasst
    werden, diese sollen ebenfalls via NFS eingebunden werden können.
  * Lehrveranstaltungswebseiten eines Semesters sollen persistent bleiben,
