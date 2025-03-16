@@ -1,6 +1,6 @@
 # NAME
 
-wp-edit: edit your (already existing) Wordpress page from the safety of local editor
+wp-edit: edit your (already existing) WordPress page from the safety of local editor
 
 # SYNOPSIS
 

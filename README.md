@@ -35,7 +35,7 @@ Folgende Shortcodes sind implementiert:
  * [i4list](doc/i4list.md) erstellt eine WordPress-typische Folien- oder
    Aufgabenübersicht aus einer Vorgabe in einem einfachen und übersichtlichen
    Format
- * [i4code](doc/i4code.md) für Quelltextbeispiele in Wordpress
+ * [i4code](doc/i4code.md) für Quelltextbeispiele in WordPress
  * [i4hidden-text](doc/i4hiddentext.md) versteckt Inhalte (wie das
    [RRZE-Pendant](https://www.wordpress.rrze.fau.de/plugins/fau-und-rrze-plugins/elements/hidden-text/),
    zeigt sie jedoch angemeldeten Nutzern (mit einem visuellen Hinweis) an
