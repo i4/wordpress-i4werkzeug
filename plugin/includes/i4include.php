@@ -149,7 +149,7 @@ class Pathinfo {
 	   (also unabhängig vom dynamischen Endpoint) */
 	public string $base = '';
 
-	/* Die volle URL (inklusive Endpoint) zu der aktuell angezeigten Wordpress Seite */
+	/* Die volle URL (inklusive Endpoint) zu der aktuell angezeigten WordPress Seite */
 	public string $link = '';
 
 	/* Die aktuell zu inkludierende Datei
@@ -293,7 +293,7 @@ function redirect(string $location) {
 }
 
 
-/* Setze QUERY_VAR (`extern`) als zusätzliche Wordpress Variable */
+/* Setze QUERY_VAR (`extern`) als zusätzliche WordPress Variable */
 function query_vars(array $vars) {
 	$vars[] = QUERY_VAR;
 	return $vars;

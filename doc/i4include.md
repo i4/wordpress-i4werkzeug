@@ -38,7 +38,7 @@ Bilddatei `baz.jpg` liegen und `bar.html` sowohl einen Link
 `<a href="fubar.html">Fubar</a>` als auch eine Grafik `<img src="images/baz.jpg">`
 beinhaltet.
 
-Wird nun auf der Wordpress-Seite 'Test' beim Einbetten der Parameter `dynamic`
+Wird nun auf der WordPress-Seite 'Test' beim Einbetten der Parameter `dynamic`
 auf wahr gestellt
 
     [i4include dynamic="true"]/proj.stand/i4wp/extern/bar.html[/i4include]
@@ -67,7 +67,7 @@ bestehen, es sieht aus wie eine reguläre WordPress-Seite.
 
 Bei Binärdateien (z.B. Bilder) muss vom Plugin eine Besonderheit berücksichtigt
 werden:
-Hier darf nicht das [HTML-]Wordpress-Layout (Kopf, Menü etc) ausgegeben werden,
+Hier darf nicht das [HTML-]WordPress-Layout (Kopf, Menü etc) ausgegeben werden,
 sondern direkt und ausschließlich der Inhalt der Datei, zudem muss noch ein
 spezieller HTTP Header übergeben werden, welcher den Dateityp (als MIME Format)
 bestimmt.
